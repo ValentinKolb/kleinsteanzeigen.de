@@ -137,6 +137,7 @@ export default function Seller() {
                         value={3.5}
                         fractions={2}
                         readOnly
+                        color={"blue"}
                     />
 
                     <Text c={"dimmed"}>3.5 von 5</Text>
@@ -146,24 +147,24 @@ export default function Seller() {
                 <Group mb={"sm"}>
                     <Badge
                         leftSection={<FaCertificate/>}
-                        variant={"gradient"}
-                        gradient={{from: 'teal', to: 'cyan', deg: 45}}
+                        //variant={"gradient"}
+                        //gradient={{from: 'teal', to: 'cyan', deg: 45}}
                     >
                         Insgesamt 12 Bewertungen
                     </Badge>
 
                     <Badge
                         leftSection={<FaUserCheck/>}
-                        variant={"gradient"}
-                        gradient={{from: 'cyan', to: 'green', deg: 45}}
+                        //variant={"gradient"}
+                        //gradient={{from: 'cyan', to: 'green', deg: 45}}
                     >
                         Verifiziert
                     </Badge>
 
                     <Badge
                         leftSection={<FaBoxes/>}
-                        variant={"gradient"}
-                        gradient={{from: 'green', to: 'teal', deg: 45}}
+                        //variant={"gradient"}
+                        //gradient={{from: 'green', to: 'teal', deg: 45}}
                     >
                         Pro Seller
                     </Badge>
@@ -177,8 +178,8 @@ export default function Seller() {
                     maxHeight={300}
                     showLabel={
                         <Button
-                            variant={"gradient"}
-                            gradient={{from: 'yellow', to: 'orange', deg: 45}}
+                            //variant={"gradient"}
+                            //gradient={{from: 'yellow', to: 'orange', deg: 45}}
                             leftIcon={<FaChevronDown/>}
                             mt={"sm"}
                         >
@@ -187,8 +188,8 @@ export default function Seller() {
                     }
                     hideLabel={
                         <Button
-                            variant={"gradient"}
-                            gradient={{from: 'yellow', to: 'orange', deg: 135}}
+                            //variant={"gradient"}
+                            //gradient={{from: 'yellow', to: 'orange', deg: 135}}
                             leftIcon={<FaChevronUp/>}
                         >
                             Bewertungen ausblenden
@@ -215,6 +216,7 @@ export default function Seller() {
                                     value={(10 - index) / 2}
                                     fractions={2}
                                     readOnly
+                                    color={"blue"}
                                 />
 
 

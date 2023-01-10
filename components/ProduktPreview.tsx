@@ -49,11 +49,12 @@ export default function ProduktPreview(props: BoxProps) {
                             radius="md"
                         />
 
-                        <Tooltip label={"Verkäufer*in Rating"} position={"bottom"} withArrow color="teal">
+                        <Tooltip label={"Verkäufer*in Rating"} position={"bottom"} withArrow>
                             <Rating
                                 value={3.5}
                                 fractions={2}
                                 readOnly
+                                color={"blue"}
                                 sx={(theme) => ({
                                     alignSelf: "flex-start",
                                 })}
@@ -64,8 +65,9 @@ export default function ProduktPreview(props: BoxProps) {
                     <Box>
 
                         <Badge
-                            variant={"gradient"}
-                            gradient={{from: "cyan", to: "green", deg: 45}}
+                            // variant={"gradient"}
+                            // gradient={{from: "cyan", to: "green", deg: 45}}
+                            // color={"blue"}
                         >
                             42 €
                         </Badge>

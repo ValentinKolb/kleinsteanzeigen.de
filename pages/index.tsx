@@ -9,7 +9,7 @@ import {
     SimpleGrid,
     Group,
     Button,
-    Flex, Badge, MediaQuery, MultiSelect, RangeSlider
+    Flex, Badge, ActionIcon, MultiSelect, RangeSlider, BoxProps, Stack, TextInput, Dialog, Modal, Collapse
 } from "@mantine/core";
 import ProduktPreview from "../components/ProduktPreview";
 import {
@@ -24,22 +24,169 @@ import {
     FaUserCheck,
     FaUsers
 } from "react-icons/all";
+import {useState} from "react";
+import {useClickOutside} from "@mantine/hooks";
+import InserateProductDialog from "../components/InserateProductDialog";
+
+const Search = ({close, ...props}: BoxProps & { close: () => void }) => {
+    return <Box
+        mb={"sm"}
+        {...props}
+    >
+        <Stack
+            //    justify={"space-between"}
+            h={"100%"}
+        >
+            <Box>
+                <Autocomplete
+                    mb={"sm"}
+                    label={"Suche"}
+                    description={"Suche nach Produkten"}
+                    placeholder={"Suche"}
+                    icon={<FaSearch/>}
+                    data={['iPhone (trending)', 'Sofa', 'Pflanzen']}
+                />
+
+                <Autocomplete
+                    mb={"sm"}
+                    label="Region"
+                    icon={<FaMapPin/>}
+                    placeholder="Ulm, Baden-Württemberg, ..."
+                    description={"Von wo aus suchst du?"}
+                    data={['Ulm', 'Augsburg']}
+                />
+
+                <NumberInput
+                    mb={"sm"}
+                    label={"Entfernung"}
+                    description={"Wie weit willst du fahren? (in km)"}
+                    icon={<FaRuler/>}
+                />
+
+                <MultiSelect
+                    data={["Schmuck", "Kleidung", "Elektronik", "Möbel", "Pflanzen", "Sonstiges"]}
+                    label="Kategorien"
+                    description={"In welchen Kategorien suchst du?"}
+                    icon={<FaFilter/>}
+                />
+
+                <RangeSlider
+                    my={"xl"}
+                    label={null}
+                    //color={"gray"}
+                    marks={[
+                        {value: 20, label: '10€'},
+                        {value: 50, label: '100€'},
+                        {value: 80, label: '1.000€'},
+                    ]}
+                />
+
+            </Box>
+
+            <Group position={"left"}>
+                <Button
+                    variant={"outline"}
+                    onClick={close}
+                    sx={(theme) => ({
+                        bottom: 0,
+                        alignSelf: "flex-start",
+                    })}
+                >
+                    Abbrechen
+                </Button>
+
+                <Button
+                    variant={"outline"}
+                    // gradient={{from: "teal", to: "cyan"}}
+                    //color={"gray"}
+                    onClick={close}
+                    leftIcon={<FaSearch/>}
+                    sx={(theme) => ({
+                        bottom: 0,
+                        alignSelf: "flex-start",
+                    })}
+                >
+                    Suchen
+                </Button>
+            </Group>
+        </Stack>
+    </Box>
+}
+
+const Badges = () => {
+    return <Group mb={"sm"} grow>
+
+        <Badge
+            leftSection={<FaMapPin/>}
+            variant={"outline"}
+            //color={"gray"}
+        >
+            Lokal
+        </Badge>
+
+        <Badge
+            leftSection={<FaHandshake/>}
+            variant={"outline"}
+            //color={"gray"}
+        >
+            Direkt
+        </Badge>
+
+        <Badge
+            leftSection={<FaTree/>}
+            variant={"outline"}
+            //color={"gray"}
+        >
+            Nachhaltig
+        </Badge>
+
+        <Badge
+            leftSection={<FaUsers/>}
+            variant={"outline"}
+            //color={"gray"}
+        >
+            Persönlich
+        </Badge>
+
+        <Badge
+            leftSection={<FaLink/>}
+            variant={"outline"}
+            //color={"gray"}
+        >
+            ... mehr
+        </Badge>
+    </Group>
+}
 
 export default function Home() {
+
+    const [showSearch, setShowSearch] = useState(false)
+    const ref = useClickOutside(() => setShowSearch(false))
+
+    const [showInserateProductDialog, setShowInserateProductDialog] = useState(false)
+
     return (
         <>
-            <Box py={"sm"}>
+            <Modal
+                opened={showInserateProductDialog}
+                onClose={() => setShowInserateProductDialog(false)}
+                title="Produkt inserieren"
+                size={"mlg"}
+            >
+                <InserateProductDialog close={() => setShowInserateProductDialog(false)}/>
+            </Modal>
 
+            <Box py={"sm"}>
 
                 <Flex
                     mb={"sm"}
                     dir={"row"}
                     align="center"
                     gap="md"
-                    p={"xl"}
+                    py={"sm"}
                     sx={(theme) => ({
                         borderRadius: theme.radius.md,
-                        backgroundImage: `url("/background.svg")`,
+                        //  backgroundImage: `url("/background.svg")`,
                         backgroundRepeat: "no-repeat",
                         backgroundSize: "cover",
                         transition: "all 0.2s ease-in-out",
@@ -48,151 +195,39 @@ export default function Home() {
                         }
                     })}
                 >
-                    <Box
-                        sx={(theme) => ({
-                            boxShadow: "0 0 10px 5px white;",
-                            borderRadius: theme.radius.md,
-                            padding: "5px",
-                            backgroundImage: `linear-gradient(45deg, ${theme.colors.blue[5]}, ${theme.colors.teal[5]})`,
-                            transition: "all 2s ease-in-out",
-                            "&:hover": {
-                                backgroundImage: `linear-gradient(45deg, ${theme.colors.cyan[5]}, ${theme.colors.indigo[5]})`,
-                            }
 
-                        })}
+                    <Button
+                        variant={"outline"}
+                        leftIcon={<FaSearch/>}
+                        onClick={() => setShowSearch(b => !b)}
+                        sx={{boxShadow: "0 0 10px 5px white;",}}
                     >
-                        < Box
-                            sx={(theme) => ({
-                                borderRadius: theme.radius.md,
-                                padding: "5px",
-                                backgroundColor: "white",
-                            })}
-                        >
-                            <Title order={1}>Inserate</Title>
-                        </Box>
-
-                    </Box>
+                        Stöbern
+                    </Button>
 
 
-                    <Text c={"white"} sx={{
-                        textShadow: "black 0px 0 10px"
+                    <Text c={"dimmend"} sx={{
+                        // textShadow: "black 0px 0 10px"
                     }}>oder</Text>
 
                     <Button
-                        variant={"gradient"}
-                        gradient={{from: "teal", to: "cyan"}}
+                        variant={"outline"}
                         leftIcon={<FaPlus/>}
                         sx={{boxShadow: "0 0 10px 5px white;",}}
+                        onClick={() => setShowInserateProductDialog(true)}
                     >
                         Selbst inserieren
                     </Button>
                 </Flex>
 
-                <Group mb={"sm"} grow>
+                <Collapse in={showSearch}>
+                    <Search close={() => setShowSearch(false)} mb={"lg"}/>
+                </Collapse>
 
-                    <Badge
-                        leftSection={<FaMapPin/>}
-                        variant={"gradient"}
-                        gradient={{from: 'cyan', to: 'green', deg: 45}}
-                    >
-                        Lokal
-                    </Badge>
-
-                    <Badge
-                        leftSection={<FaHandshake/>}
-                        variant={"gradient"}
-                        gradient={{from: 'green', to: 'teal', deg: 45}}
-                    >
-                        Direkt
-                    </Badge>
-
-                    <Badge
-                        leftSection={<FaTree/>}
-                        variant={"gradient"}
-                        gradient={{from: 'green', to: 'lime', deg: 45}}
-                    >
-                        Nachhaltig
-                    </Badge>
-
-                    <Badge
-                        leftSection={<FaUsers/>}
-                        variant={"gradient"}
-                        gradient={{from: 'lime', to: 'yellow', deg: 45}}
-                    >
-                        Persönlich
-                    </Badge>
-
-                    <Badge
-                        leftSection={<FaLink/>}
-                        variant={"gradient"}
-                        gradient={{from: 'yellow', to: 'orange', deg: 45}}
-                    >
-                        ... mehr zu unseren Werten
-                    </Badge>
-                </Group>
-
-
-                <Box
-                    mb={"sm"}
-                >
-                    <Autocomplete
-                        mb={"sm"}
-                        label={"Suche"}
-                        description={"Suche nach Produkten"}
-                        placeholder={"Suche"}
-                        icon={<FaSearch/>}
-                        data={['iPhone (trending)', 'Sofa', 'Pflanzen']}
-                    />
-
-                    <Autocomplete
-                        mb={"sm"}
-                        label="Region"
-                        icon={<FaMapPin/>}
-                        placeholder="Ulm, Baden-Württemberg, ..."
-                        description={"Von wo aus suchst du?"}
-                        data={['Ulm', 'Augsburg']}
-                    />
-
-                    <NumberInput
-                        mb={"sm"}
-                        label={"Entfernung"}
-                        description={"Wie weit willst du fahren? (in km)"}
-                        icon={<FaRuler/>}
-                    />
-
-                    <MultiSelect
-                        data={["Schmuck", "Kleidung", "Elektronik", "Möbel", "Pflanzen", "Sonstiges"]}
-                        label="Kategorien"
-                        description={"In welchen Kategorien suchst du?"}
-                        icon={<FaFilter/>}
-                    />
-
-                    <RangeSlider
-                        my={"lg"}
-                        label={null}
-                        color={"teal"}
-                        marks={[
-                            {value: 20, label: '10€'},
-                            {value: 50, label: '100€'},
-                            {value: 80, label: '1.000€'},
-                        ]}
-                    />
-
-                    <Button
-                        variant={"gradient"}
-                        gradient={{from: "teal", to: "cyan"}}
-                        leftIcon={<FaSearch/>}
-                    >
-                        Suchen
-                    </Button>
-
-                </Box>
-
+                <Badges/>
 
                 <SimpleGrid cols={2}>
-
                     {Array(21).fill(0).map((_, i) => (<ProduktPreview key={i}/>))}
-
                 </SimpleGrid>
 
                 <Center>

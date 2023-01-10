@@ -113,8 +113,8 @@ const ProductOverview = (props: BoxProps) => {
                     justifySelf: "flex-start",
                 })}
                 leftIcon={<FaShoppingBag/>}
-                variant="gradient"
-                gradient={{from: 'indigo', to: 'teal', deg: 60}}
+                 variant="outline"
+                // gradient={{from: 'indigo', to: 'teal', deg: 60}}
             >
                 Merken
             </Button>
@@ -124,8 +124,8 @@ const ProductOverview = (props: BoxProps) => {
                     justifySelf: "flex-start",
                 })}
                 leftIcon={<FaHandshake/>}
-                variant="gradient"
-                gradient={{from: 'teal', to: 'blue', deg: 60}}
+                variant="outline"
+                // gradient={{from: 'teal', to: 'blue', deg: 60}}
             >
                 Verhandeln
             </Button>
@@ -173,6 +173,7 @@ const SellerOverview = (props: BoxProps) => {
                 value={3.5}
                 fractions={2}
                 readOnly
+                color={"blue"}
             />
         </Stack>
         <Button
@@ -209,7 +210,7 @@ export default function Product() {
                 <Breadcrumbs>{items}</Breadcrumbs>
 
                 <Badge
-                    color={"gray"}
+                    //color={"gray"}
                     leftSection={<FaShoppingBasket/>}
                 >
                     Professioneller Reseller
@@ -228,17 +229,15 @@ export default function Product() {
                 <Title order={1}>Lorem ipsum dolor</Title>
             </Box>
 
+            <ImageCarousel mb={"sm"} />
+
             <Grid justify="space-between" align="stretch">
 
-                <Grid.Col md={12} lg={3}>
-                    <ImageCarousel h={"100%"}/>
-                </Grid.Col>
-
-                <Grid.Col sm={12} md={8} lg={"auto"}>
+                <Grid.Col sm={12} md={8} >
                     <ProductOverview h={"100%"}/>
                 </Grid.Col>
 
-                <Grid.Col sm={12} md={4} lg={3}>
+                <Grid.Col sm={12} md={4}>
                     <SellerOverview h={"100%"}/>
                 </Grid.Col>
 

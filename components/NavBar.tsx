@@ -2,85 +2,35 @@ import {
     Box,
     Group,
     Badge,
-    Center,
+    Divider,
     ActionIcon,
     Text,
     Container,
     Button,
     Modal,
     TextInput,
-    PasswordInput, Code, Drawer, Textarea, Checkbox, Flex, MediaQuery
+    PasswordInput, Code, Drawer, Textarea, Checkbox, Flex, MediaQuery, Popover, Title
 } from "@mantine/core";
 import {FaCarrot, FaCheck, FaLockOpen, FaThumbsUp, FaUser, FaUserLock, FaUserPlus} from "react-icons/all";
 import Link from "next/link";
 import {useState} from "react";
+import Register from "./Register";
 
 export default function NavBar() {
 
     const [showLogin, setShowLogin] = useState(false)
     const [showRegister, setShowRegister] = useState(false)
 
+    const countSteps = 3
+
     return <>
 
-        <Drawer
+        <Modal
             opened={showRegister}
             onClose={() => setShowRegister(false)}
-            title="Account erstellen"
-            padding="xl"
-            size="xl"
+            title="Registrieren"
         >
-            <TextInput withAsterisk label="Anmeldename" placeholder="Anmeldename" mb={"sm"}/>
-            <TextInput label="Telefonnummer" placeholder="Telefonnummer" mb={"sm"}/>
-            <TextInput withAsterisk label="E-Mail" placeholder="E-Mail" mb={"sm"}/>
-            <PasswordInput withAsterisk label="Passwort" placeholder="Passwort" mb={"sm"}/>
-            <PasswordInput withAsterisk label="Passwort wiederholen" placeholder="Passwort wiederholen" mb={"sm"}/>
-            <Textarea label="Über dich" placeholder="Erzähle anderen etwas über dich" mb={"sm"}/>
-            <Checkbox required label="Ich akzeptiere die AGB" mb={"sm"}/>
-            <Checkbox label="Ich möchte per Email über neue Angebote oder Chat Nachrichten benachrichtigt werden"
-                      mb={"sm"}/>
-            <Button
-                variant={"gradient"}
-                gradient={{from: 'teal', to: 'blue', deg: 45}}
-                leftIcon={<FaUserPlus/>}
-                onClick={() => setShowRegister(false)}
-            >
-                Account erstellen
-            </Button>
-        </Drawer>
-
-
-        <Modal
-            opened={showLogin}
-            onClose={() => setShowLogin(false)}
-            title="Login"
-        >
-            <TextInput label="Anmeldename" placeholder="Anmeldename" mb={"sm"}/>
-            <PasswordInput label="Passwort" placeholder="Passwort" mb={"sm"}/>
-
-            <Group>
-                <Button
-                    variant={"gradient"}
-                    gradient={{from: 'teal', to: 'blue', deg: 45}}
-                    leftIcon={<FaLockOpen/>}
-                    onClick={() => setShowLogin(false)}
-                >
-                    Einloggen
-                </Button>
-
-                <Text>oder</Text>
-
-                <Button
-                    variant={"gradient"}
-                    gradient={{from: 'blue', to: 'green', deg: 45}}
-                    leftIcon={<FaUser/>}
-                    onClick={() => {
-                        setShowLogin(false)
-                        setShowRegister(true)
-                    }}
-                >
-                    Konto erstellen
-                </Button>
-            </Group>
+            <Register close={() => setShowRegister(false)}/>
         </Modal>
 
         <Flex
@@ -98,7 +48,7 @@ export default function NavBar() {
             <Box
                 mx={"sm"}
                 sx={(theme) => ({
-                    width: "1320px",
+                    width: "960px",
                 })}
                 px={0}
                 p={"sm"}
@@ -111,8 +61,8 @@ export default function NavBar() {
                         component={Link}
                         href={"/"}
                         passHref
-                        variant={"gradient"}
-                        gradient={{from: 'teal', to: 'blue', deg: 45}}
+                        variant={"outline"}
+                        //gradient={{from: 'teal', to: 'blue', deg: 45}}
                         leftIcon={<FaCarrot/>}
                         sx={(theme) => ({
                             fontFamily: 'Aclonica, sans-serif',
@@ -127,25 +77,69 @@ export default function NavBar() {
                         <MediaQuery styles={{display: "none"}} smallerThan={"xs"}>
                             <Badge
                                 leftSection={<FaCheck/>}
-                                color={"green"}
+                                color={"gray"}
                             >
                                 Trusted Online Shop
                             </Badge>
                         </MediaQuery>
 
-                        <ActionIcon
-                            size={"xl"}
-                            onClick={() => setShowLogin(true)}
-                            sx={(theme) => ({
-                                borderRadius: theme.radius.sm,
-                                boxShadow: theme.shadows.md,
+                        <Popover width={400} trapFocus position="bottom-end" withArrow shadow="md" opened={showLogin}
+                                 onChange={() => setShowLogin(l => !l)}>
 
-                            })}
-                            variant={"gradient"}
-                            gradient={{from: 'cyan', to: 'green', deg: 45}}
-                        >
-                            <FaUserLock/>
-                        </ActionIcon>
+                            <Popover.Target>
+
+                                <ActionIcon
+                                    size={"xl"}
+                                    onClick={() => setShowLogin(true)}
+                                    sx={(theme) => ({
+                                        borderRadius: theme.radius.sm,
+                                        boxShadow: theme.shadows.md,
+
+                                    })}
+                                    //variant={"gradient"}
+                                    //gradient={{from: 'cyan', to: 'green', deg: 45}}
+                                    color={"blue"}
+                                >
+                                    <FaUserLock/>
+                                </ActionIcon>
+                            </Popover.Target>
+
+                            <Popover.Dropdown>
+
+                                <Title order={3}>Anmelden</Title>
+
+                                <TextInput label="Anmeldename" placeholder="Anmeldename" mb={"sm"}/>
+                                <PasswordInput label="Passwort" placeholder="Passwort" mb={"sm"}/>
+
+                                <Group>
+                                    <Button
+                                        //variant={"gradient"}
+                                        //gradient={{from: 'teal', to: 'blue', deg: 45}}
+                                        leftIcon={<FaLockOpen/>}
+                                        onClick={() => setShowLogin(false)}
+                                    >
+                                        Einloggen
+                                    </Button>
+
+                                    <Text>oder</Text>
+
+                                    <Button
+                                        //variant={"gradient"}
+                                        //gradient={{from: 'blue', to: 'green', deg: 45}}
+                                        leftIcon={<FaUser/>}
+                                        onClick={() => {
+                                            setShowLogin(false)
+                                            setShowRegister(true)
+                                        }}
+                                    >
+                                        Konto erstellen
+                                    </Button>
+                                </Group>
+
+                            </Popover.Dropdown>
+
+                        </Popover>
+
                     </Group>
 
                 </Group>

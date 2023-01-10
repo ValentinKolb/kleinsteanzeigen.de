@@ -22,7 +22,7 @@ export default function App({Component, pageProps}: AppProps) {
                 <main>
                     <NavBar/>
                     <Container
-                        size={"xl"}
+                        //size={"xl"}
                         sx={(theme) => ({
                             marginTop: "85px",
                             boxShadow: theme.shadows.md,
