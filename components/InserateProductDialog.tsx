@@ -12,20 +12,19 @@ import {
     Input,
     Text, Stack, Center, Title, Table, Modal, NumberInput, Badge, List
 } from "@mantine/core";
-import {
-    FaChevronLeft,
-    FaChevronRight, FaEye,
-    FaHandshake,
-    FaImage,
-    FaInfo,
-    FaPen,
-    FaRulerCombined,
-    FaTrash,
-    FaUpload
-} from "react-icons/all";
 import Dropzone, {DropzoneState} from "react-dropzone";
 import {IMAGE_MIME_TYPE} from "@mantine/dropzone";
 import {Carousel} from "@mantine/carousel";
+import {
+    IconChevronLeft,
+    IconChevronRight,
+    IconEye, IconHeartHandshake,
+    IconPencil,
+    IconPhoto,
+    IconRuler,
+    IconTrash,
+    IconUpload
+} from "@tabler/icons";
 
 export default function InserateProductDialog({close}: { close: () => void }) {
 
@@ -38,7 +37,7 @@ export default function InserateProductDialog({close}: { close: () => void }) {
     return <>
 
         <Stepper active={active} onStepClick={setActive} breakpoint={"sm"}>
-            <Stepper.Step description="Start" icon={<FaRulerCombined/>}>
+            <Stepper.Step description="Start" icon={<IconRuler/>}>
                 <TextInput
                     label={"Produktname"}
                     placeholder={"Produktname"}
@@ -82,7 +81,7 @@ export default function InserateProductDialog({close}: { close: () => void }) {
             </Stepper.Step>
 
 
-            <Stepper.Step description="Beschreibung" icon={<FaPen/>}>
+            <Stepper.Step description="Beschreibung" icon={<IconPencil/>}>
 
                 <Textarea
                     label={"Beschreibung"}
@@ -99,7 +98,7 @@ export default function InserateProductDialog({close}: { close: () => void }) {
                     minRows={3}
                 />
             </Stepper.Step>
-            <Stepper.Step description="Bilder" icon={<FaImage/>}>
+            <Stepper.Step description="Bilder" icon={<IconPhoto/>}>
 
                 <Box mb={"sm"}>
 
@@ -120,7 +119,7 @@ export default function InserateProductDialog({close}: { close: () => void }) {
                                 })}
                             >
 
-                                <FaUpload size={30}/>
+                                <IconUpload size={30}/>
 
                                 <Text size="xl" inline>
                                     Bilder hochladen
@@ -158,7 +157,7 @@ export default function InserateProductDialog({close}: { close: () => void }) {
                                     }}
                                 >
                                     <ActionIcon variant={"transparent"}>
-                                        <FaTrash size={10}/>
+                                        <IconTrash size={10}/>
                                     </ActionIcon>
                                 </Box>
                             </Box>
@@ -176,7 +175,7 @@ export default function InserateProductDialog({close}: { close: () => void }) {
 
             </Stepper.Step>
 
-            <Stepper.Step description={"Übersicht"} icon={<FaEye/>}>
+            <Stepper.Step description={"Übersicht"} icon={<IconEye/>}>
 
                 <Table>
                     <tbody>
@@ -233,7 +232,7 @@ export default function InserateProductDialog({close}: { close: () => void }) {
                                                     h={"100%"}
                                                     w={"100%"}
                                                 >
-                                                    <FaImage/>
+                                                    <IconPhoto/>
                                                 </Center>
                                             </Box>
 
@@ -253,9 +252,7 @@ export default function InserateProductDialog({close}: { close: () => void }) {
             </Stepper.Step>
 
             <Stepper.Completed>
-
                 <Center h={300}>
-
                     <Text mb={"sm"}>
                         Möchtest du das Produkt wirklich inserieren?
                     </Text>
@@ -271,20 +268,20 @@ export default function InserateProductDialog({close}: { close: () => void }) {
                     variant="default"
                     onClick={prevStep}
                 >
-                    <FaChevronLeft/>
+                    <IconChevronLeft/>
                 </ActionIcon>
             }
             {active < countSteps ? (
                 <Button
                     onClick={nextStep}
-                    rightIcon={<FaChevronRight/>}
+                    rightIcon={<IconChevronRight/>}
                 >
                     Nächster Schritt
                 </Button>
             ) : (
 
                 <Button
-                    rightIcon={<FaHandshake/>}
+                    rightIcon={<IconHeartHandshake/>}
                     onClick={() => close()}
                 >
                     Inserieren

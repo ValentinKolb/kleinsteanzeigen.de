@@ -11,10 +11,10 @@ import {
     TextInput,
     PasswordInput, Code, Drawer, Textarea, Checkbox, Flex, MediaQuery, Popover, Title
 } from "@mantine/core";
-import {FaCarrot, FaCheck, FaLockOpen, FaThumbsUp, FaUser, FaUserLock, FaUserPlus} from "react-icons/all";
 import Link from "next/link";
 import {useState} from "react";
 import Register from "./Register";
+import {IconCheck, IconLockOpen, IconLogin, IconTag, IconUser} from "@tabler/icons";
 
 export default function NavBar() {
 
@@ -63,9 +63,9 @@ export default function NavBar() {
                         passHref
                         variant={"outline"}
                         //gradient={{from: 'teal', to: 'blue', deg: 45}}
-                        leftIcon={<FaCarrot/>}
+                        leftIcon={<IconTag/>}
                         sx={(theme) => ({
-                            fontFamily: 'Aclonica, sans-serif',
+                            // fontFamily: 'Aclonica, sans-serif',
                             boxShadow: theme.shadows.md
                         })}
                     >
@@ -76,8 +76,8 @@ export default function NavBar() {
 
                         <MediaQuery styles={{display: "none"}} smallerThan={"xs"}>
                             <Badge
-                                leftSection={<FaCheck/>}
-                                color={"gray"}
+                                leftSection={<IconCheck/>}
+                                color={"green"}
                             >
                                 Trusted Online Shop
                             </Badge>
@@ -100,7 +100,7 @@ export default function NavBar() {
                                     //gradient={{from: 'cyan', to: 'green', deg: 45}}
                                     color={"blue"}
                                 >
-                                    <FaUserLock/>
+                                    <IconLogin/>
                                 </ActionIcon>
                             </Popover.Target>
 
@@ -115,7 +115,7 @@ export default function NavBar() {
                                     <Button
                                         //variant={"gradient"}
                                         //gradient={{from: 'teal', to: 'blue', deg: 45}}
-                                        leftIcon={<FaLockOpen/>}
+                                        leftIcon={<IconLockOpen/>}
                                         onClick={() => setShowLogin(false)}
                                     >
                                         Einloggen
@@ -126,7 +126,7 @@ export default function NavBar() {
                                     <Button
                                         //variant={"gradient"}
                                         //gradient={{from: 'blue', to: 'green', deg: 45}}
-                                        leftIcon={<FaUser/>}
+                                        leftIcon={<IconUser/>}
                                         onClick={() => {
                                             setShowLogin(false)
                                             setShowRegister(true)

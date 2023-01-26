@@ -1,15 +1,6 @@
 import {useState} from "react";
-import {
-    FaCheck,
-    FaChevronLeft,
-    FaChevronRight,
-    FaHandshake,
-    FaInfo,
-    FaPen,
-    FaRulerCombined,
-    FaUser
-} from "react-icons/all";
 import {ActionIcon, Button, Checkbox, Divider, Group, PasswordInput, Stepper, Textarea, TextInput} from "@mantine/core";
+import {IconCheck, IconChevronLeft, IconChevronRight, IconInfoCircle, IconPencil, IconUser} from "@tabler/icons";
 
 export default function Register({close}: { close: () => void }) {
     const [active, setActive] = useState(1);
@@ -20,18 +11,18 @@ export default function Register({close}: { close: () => void }) {
     return <>
 
         <Stepper active={active} onStepClick={setActive} breakpoint={"sm"}>
-            <Stepper.Step icon={<FaUser/>}>
+            <Stepper.Step icon={<IconUser/>}>
                 <TextInput withAsterisk label="Anmeldename" placeholder="Anmeldename" mb={"sm"}/>
                 <TextInput label="Telefonnummer" placeholder="Telefonnummer" mb={"sm"}/>
                 <TextInput withAsterisk label="E-Mail" placeholder="E-Mail" mb={"sm"}/>
             </Stepper.Step>
 
-            <Stepper.Step icon={<FaInfo/>}>
+            <Stepper.Step icon={<IconInfoCircle/>}>
                 <PasswordInput withAsterisk label="Passwort" placeholder="Passwort" mb={"sm"}/>
                 <PasswordInput withAsterisk label="Passwort wiederholen" placeholder="Passwort wiederholen" mb={"sm"}/>
             </Stepper.Step>
 
-            <Stepper.Step icon={<FaPen/>}>
+            <Stepper.Step icon={<IconPencil/>}>
                 <Textarea label="Über dich" placeholder="Erzähle anderen etwas über dich" mb={"sm"} minRows={4}/>
             </Stepper.Step>
 
@@ -59,20 +50,20 @@ export default function Register({close}: { close: () => void }) {
                     variant="default"
                     onClick={prevStep}
                 >
-                    <FaChevronLeft/>
+                    <IconChevronLeft/>
                 </ActionIcon>
             }
             {active < countSteps ? (
                 <Button
                     onClick={nextStep}
-                    rightIcon={<FaChevronRight/>}
+                    rightIcon={<IconChevronRight/>}
                 >
                     Nächster Schritt
                 </Button>
             ) : (
 
                 <Button
-                    rightIcon={<FaCheck/>}
+                    rightIcon={<IconCheck/>}
                     onClick={() => close()}
                 >
                     Registrieren

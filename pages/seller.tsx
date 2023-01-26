@@ -13,18 +13,11 @@ import {
     Rating,
     Stack, Skeleton, Center, Spoiler, Button, SimpleGrid,
 } from "@mantine/core";
-import {
-    FaBoxes,
-    FaCertificate,
-    FaChevronDown,
-    FaChevronUp,
-    FaCouch,
-    FaImage,
-    FaShoppingBasket,
-    FaUser,
-    FaUserCheck
-} from "react-icons/all";
 import ProduktPreview from "../components/ProduktPreview";
+import Image from "next/image";
+import React from "react";
+import data from "../data";
+import {IconBox, IconCertificate, IconChevronDown, IconChevronUp, IconShoppingCart, IconUserCheck} from "@tabler/icons";
 
 export default function Seller() {
 
@@ -44,7 +37,7 @@ export default function Seller() {
                 <Breadcrumbs>{items}</Breadcrumbs>
                 <Badge
                     color={"gray"}
-                    leftSection={<FaShoppingBasket/>}
+                    leftSection={<IconShoppingCart/>}
                 >
                     Professioneller Reseller
                 </Badge>
@@ -57,39 +50,28 @@ export default function Seller() {
                      borderRadius: theme.radius.md,
                  })}
             >
-                <Title order={1}>Lorem Ipsum</Title>
+                <Title order={1}>Paul Müller</Title>
             </Box>
 
             <Grid justify="space-between" align="stretch">
+                <Grid.Col xs={3} md={3}>
 
-                <Grid.Col xs={3} md={2}>
+                    <Center
+                        sx={(theme) => ({
 
-                    <Box pos={"relative"}>
-                        <Box sx={{
-                            position: "absolute",
-                            top: 0,
-                            right: 0,
-                            zIndex: 1,
-                            height: "100%",
-                            width: "100%",
-                        }}>
-                            <Center
-                                h={"100%"}
-                                w={"100%"}
-                            >
-                                <FaUser/>
-                            </Center>
-                        </Box>
+                            position: "relative",
+                            minHeight: "200px",
+                        })}
+                    >
+                        <Image src={"/images/seller.jpg"} alt={"seller.jpg"}
 
-                        <Skeleton
-                            mih={"200px"}
-                            w={"100%"}
-                            radius="sm"
+                               fill={true}
+                               objectFit={"cover"}
                         />
-                    </Box>
+                    </Center>
                 </Grid.Col>
 
-                <Grid.Col xs={9} md={10}>
+                <Grid.Col xs={9} md={9}>
                     <Box p={"sm"}
                          mb={"sm"}
                          sx={(theme) => ({
@@ -106,21 +88,18 @@ export default function Seller() {
                             <Divider w={"100%"}/>
 
                             <Text c={"dimmed"} mb={"md"}>
-                                Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor
-                                invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et
-                                accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata
-                                sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur
-                                sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna
-                                aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea
-                                rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit
-                                amet.
+                                Ich bin Händler aus Leidenschaft. Ich verkaufe nur die besten Produkte.
+                                <br/>
+                                Ich verkaufe seit 2015 auf verschiedenen Plattformen und habe mich auf
+                                die Verkauf von hochwertigen Möbeln spezialisiert.
+                                <br/>
+                                Alle meine Produkte sind in einem sehr guten Zustand und werden von mir
+                                vor dem Verkauf auf ihre Qualität geprüft.
                             </Text>
                         </Stack>
 
-
                     </Box>
                 </Grid.Col>
-
             </Grid>
 
             <Box p={"sm"}
@@ -146,7 +125,7 @@ export default function Seller() {
 
                 <Group mb={"sm"}>
                     <Badge
-                        leftSection={<FaCertificate/>}
+                        leftSection={<IconCertificate/>}
                         //variant={"gradient"}
                         //gradient={{from: 'teal', to: 'cyan', deg: 45}}
                     >
@@ -154,7 +133,7 @@ export default function Seller() {
                     </Badge>
 
                     <Badge
-                        leftSection={<FaUserCheck/>}
+                        leftSection={<IconUserCheck/>}
                         //variant={"gradient"}
                         //gradient={{from: 'cyan', to: 'green', deg: 45}}
                     >
@@ -162,7 +141,7 @@ export default function Seller() {
                     </Badge>
 
                     <Badge
-                        leftSection={<FaBoxes/>}
+                        leftSection={<IconBox/>}
                         //variant={"gradient"}
                         //gradient={{from: 'green', to: 'teal', deg: 45}}
                     >
@@ -180,7 +159,7 @@ export default function Seller() {
                         <Button
                             //variant={"gradient"}
                             //gradient={{from: 'yellow', to: 'orange', deg: 45}}
-                            leftIcon={<FaChevronDown/>}
+                            leftIcon={<IconChevronDown/>}
                             mt={"sm"}
                         >
                             Alle Bewertungen anzeigen
@@ -190,7 +169,7 @@ export default function Seller() {
                         <Button
                             //variant={"gradient"}
                             //gradient={{from: 'yellow', to: 'orange', deg: 135}}
-                            leftIcon={<FaChevronUp/>}
+                            leftIcon={<IconChevronUp/>}
                         >
                             Bewertungen ausblenden
                         </Button>
@@ -198,55 +177,40 @@ export default function Seller() {
                     transitionDuration={5}
                 >
                     {Array.from({length: 10}).map((_, index) => (
-                        <Box key={index}
-                             p={"sm"}
-                             mb={"sm"}
-                             sx={(theme) => ({
-                                 boxShadow: theme.shadows.md,
-                                 borderRadius: theme.radius.md,
-                             })}
-                        >
 
-                            <Group>
+                        <React.Fragment key={index}>
 
-                                <Avatar/>
-
-
-                                <Rating
-                                    value={(10 - index) / 2}
-                                    fractions={2}
-                                    readOnly
-                                    color={"blue"}
-                                />
-
-
-                                <Spoiler maxHeight={50} hideLabel={"Ausblenden"} showLabel={"Mehr anzeigen"}
-                                         transitionDuration={.2}>
-                                    <Text c={"dimmed"}>
-                                        Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy
-                                        eirmod
-                                        tempor
-                                        invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero
-                                        eos
-                                        et
-                                        accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea
-                                        takimata
-                                        sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet,
-                                        consetetur
-                                        sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore
-                                        magna
-                                        aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo
-                                        dolores et
-                                        ea
-                                    </Text>
-                                </Spoiler>
-
-                            </Group>
-
-
-                        </Box>
+                            <Box
+                                p={"sm"}
+                                mb={"sm"}
+                                sx={(theme) => ({
+                                    boxShadow: theme.shadows.md,
+                                    borderRadius: theme.radius.md,
+                                })}
+                            >
+                                <Group>
+                                    <Avatar/>
+                                    <Rating
+                                        value={(10 - index) / 2}
+                                        fractions={2}
+                                        readOnly
+                                        color={"blue"}
+                                    />
+                                    <Spoiler maxHeight={50} hideLabel={"Ausblenden"} showLabel={"Mehr anzeigen"}
+                                             transitionDuration={.2}>
+                                        <Text c={"dimmed"}>
+                                            Ein sehr tolles Produkt habe ich erhalten, jedoch etwas zu teuer.
+                                            Ich bin fasziniert von der noch guten Qualität dieser Uhr. Kann ich nur
+                                            weiterempfehlen!
+                                            Leider nur kein Schlag wie versprochen.
+                                            Hervorragende Sammlerstücke! Das antike Design der Uhren gefällt mir sehr.
+                                            Werde ich auf jeden Fall weiterempfehlen.
+                                        </Text>
+                                    </Spoiler>
+                                </Group>
+                            </Box>
+                        </React.Fragment>
                     ))}
-
                 </Spoiler>
 
             </Box>
@@ -257,8 +221,9 @@ export default function Seller() {
                 mb={"sm"}
             >
                 <SimpleGrid cols={2}>
-                    {Array(7).fill(0).map((_, i) => (
+                    {data.map((product, i) => (
                         <ProduktPreview
+                            product={product}
                             key={i}
                             sx={(theme) => ({
                                 borderRadius: theme.radius.md,

@@ -1,7 +1,7 @@
 import '../styles/globals.css'
 import type {AppProps} from 'next/app'
 import Head from "next/head"
-import {Container, MantineProvider, Box} from "@mantine/core"
+import {Container, MantineProvider, Box, BadgeStylesParams} from "@mantine/core"
 import NavBar from "../components/NavBar"
 import "@fontsource/aclonica"
 
@@ -18,6 +18,17 @@ export default function App({Component, pageProps}: AppProps) {
             <MantineProvider
                 withGlobalStyles
                 withNormalizeCSS
+                theme={{
+                    colors: {
+                        brand: ['#86B817', '#86B817', '#86B817', '#86B817', '#86B817', '#86B817', '#86B817', '#86B817', '#86B817', '#86B817']
+                    },
+                    primaryColor: 'brand',
+                    components: {
+                        Badge: {
+                            styles: (theme, {variant}: BadgeStylesParams) => ({})
+                        }
+                    }
+                }}
             >
                 <main>
                     <NavBar/>

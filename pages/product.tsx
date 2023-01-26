@@ -1,37 +1,41 @@
 import {
-    Box,
-    Group,
-    Skeleton,
     Anchor,
-    Breadcrumbs,
+    Avatar,
     Badge,
-    Title,
-    Table,
+    Box,
+    BoxProps,
+    Breadcrumbs,
+    Button,
+    Center,
+    Divider,
+    Flex,
+    Grid,
+    Group,
     List,
+    Rating,
     SimpleGrid,
+    Skeleton,
+    Stack,
+    Table,
     Text,
-    Center, Stack,
-    Avatar, Rating,
-    Button, Flex, Divider,
-    Grid, BoxProps, MediaQuery, CSSObject, useMantineTheme, ThemeIcon
+    Title
 } from "@mantine/core";
-import {
-    FaAward,
-    FaBox, FaHandshake, FaImage,
-    FaInfoCircle, FaPinterest,
-    FaRulerCombined,
-    FaShippingFast, FaShoppingBag,
-    FaShoppingBasket,
-    FaShopware, FaSpeakap,
-    FaWeight,
-} from "react-icons/all";
 import ProduktPreview from "../components/ProduktPreview";
 import {Carousel} from "@mantine/carousel";
 import Link from "next/link";
+import data, {ProductData} from "../data";
+import {useRouter} from "next/router";
+import Image from "next/image";
+import {
+    IconAward, IconBox,
+    IconHeartHandshake,
+    IconInfoCircle, IconPackgeExport,
+    IconRuler,
+    IconShoppingBag,
+    IconShoppingCart, IconWeight
+} from "@tabler/icons";
 
-
-const ImageCarousel = (props: BoxProps) => {
-
+const ImageCarousel = ({product, ...props}: BoxProps & { product: ProductData }) => {
 
     return <Box {...props} h={"300px"}>
         <Carousel
@@ -39,40 +43,21 @@ const ImageCarousel = (props: BoxProps) => {
             withIndicators
             loop
         >
-
-            {Array(4).fill(0).map((_, i) => (
+            {product.images.map((imageUrl, i) => (
                 <Carousel.Slide key={i}>
-                    <Box pos={"relative"}>
-
-                        <Box sx={{
-                            position: "absolute",
-                            top: 0,
-                            right: 0,
-                            zIndex: 1,
-                            height: "100%",
-                            width: "100%",
-                        }}>
-                            <Center
-                                h={"100%"}
-                                w={"100%"}
-                            >
-                                <FaImage/>
-                            </Center>
-                        </Box>
-
-                        <Skeleton
-                            mih={"300px"}
-                            w={"100%"}
-                            radius="sm"
-                        />
-                    </Box>
+                    <Center
+                        h={"100%"}
+                        w={"100%"}
+                    >
+                        <Image src={`/images/${imageUrl}`} alt={product.name} width={300} height={300}/>
+                    </Center>
                 </Carousel.Slide>
             ))}
         </Carousel>
     </Box>
 }
 
-const ProductOverview = (props: BoxProps) => {
+const ProductOverview = ({product, ...props}: BoxProps & { product: ProductData }) => {
     return <Box sx={(theme) => ({
         boxShadow: theme.shadows.md,
         borderRadius: theme.radius.md,
@@ -84,7 +69,7 @@ const ProductOverview = (props: BoxProps) => {
 
         <Stack>
 
-            <Title order={2}>Preis: 42€</Title>
+            <Title order={2}>Preis: {product.price}€</Title>
 
             <Divider w={"100%"}/>
 
@@ -93,14 +78,7 @@ const ProductOverview = (props: BoxProps) => {
                 <Title order={4} mb={"sm"}>Übersicht</Title>
 
                 <Text c={"dimmed"} mb={"md"} lineClamp={3}>
-                    Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor
-                    invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et
-                    accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata
-                    sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur
-                    sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna
-                    aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea
-                    rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit
-                    amet.
+                    {product.description}
                 </Text>
 
             </Box>
@@ -112,8 +90,8 @@ const ProductOverview = (props: BoxProps) => {
                 sx={(theme) => ({
                     justifySelf: "flex-start",
                 })}
-                leftIcon={<FaShoppingBag/>}
-                 variant="outline"
+                leftIcon={<IconShoppingCart/>}
+                variant="outline"
                 // gradient={{from: 'indigo', to: 'teal', deg: 60}}
             >
                 Merken
@@ -123,7 +101,7 @@ const ProductOverview = (props: BoxProps) => {
                 sx={(theme) => ({
                     justifySelf: "flex-start",
                 })}
-                leftIcon={<FaHandshake/>}
+                leftIcon={<IconHeartHandshake/>}
                 variant="outline"
                 // gradient={{from: 'teal', to: 'blue', deg: 60}}
             >
@@ -160,13 +138,13 @@ const SellerOverview = (props: BoxProps) => {
                 <Title
                     order={4}
                 >
-                    Lorem Ipsum
+                    Paul Müller
                 </Title>
                 <Avatar/>
             </Flex>
 
             <Text c={"dimmed"} mb={"md"}>
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+                Ich bin Händler aus Leidenschaft. Ich verkaufe nur die besten Produkte.
             </Text>
 
             <Rating
@@ -182,7 +160,7 @@ const SellerOverview = (props: BoxProps) => {
             sx={(theme) => ({
                 justifySelf: "flex-start",
             })}
-            leftIcon={<FaAward/>}
+            leftIcon={<IconAward/>}
             variant={"subtle"}
         >
             Bewertungen ansehen
@@ -200,7 +178,17 @@ export default function Product() {
         <Anchor href={item.href} key={index} color={"dimmed"}>
             {item.title}
         </Anchor>
-    ));
+    ))
+
+    const router = useRouter()
+
+    const productName = router.query.productName as string
+
+    const product = data.find(p => p.name === productName)
+
+    if (!product) {
+        return <Box>Product not found</Box>
+    }
 
     return (
         <Box py={"sm"}>
@@ -211,7 +199,7 @@ export default function Product() {
 
                 <Badge
                     //color={"gray"}
-                    leftSection={<FaShoppingBasket/>}
+                    leftSection={<IconShoppingCart/>}
                 >
                     Professioneller Reseller
                 </Badge>
@@ -226,15 +214,15 @@ export default function Product() {
                      borderRadius: theme.radius.md,
                  })}
             >
-                <Title order={1}>Lorem ipsum dolor</Title>
+                <Title order={1}>{product.name}</Title>
             </Box>
 
-            <ImageCarousel mb={"sm"} />
+            <ImageCarousel mb={"sm"} product={product}/>
 
             <Grid justify="space-between" align="stretch">
 
-                <Grid.Col sm={12} md={8} >
-                    <ProductOverview h={"100%"}/>
+                <Grid.Col sm={12} md={8}>
+                    <ProductOverview product={product} h={"100%"}/>
                 </Grid.Col>
 
                 <Grid.Col sm={12} md={4}>
@@ -258,37 +246,52 @@ export default function Product() {
                     <tbody>
 
                     <tr>
-                        <td><Badge leftSection={<FaInfoCircle/>}>Beschreibung</Badge></td>
-                        <td><Text
-                            c={"dimmed"}>{"Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet."}</Text>
+                        <td><Badge variant={"outline"} leftSection={<IconInfoCircle size={12}/>}>Beschreibung</Badge>
+                        </td>
+                        <td><Text c={"dimmed"}>
+                            {product.description}
+                        </Text>
                         </td>
                     </tr>
 
 
                     <tr>
-                        <td><Badge leftSection={<FaRulerCombined/>}>Abmessungen</Badge></td>
-                        <td><Text c={"dimmed"}>100x200cm</Text></td>
+                        <td><Badge variant={"outline"} leftSection={<IconRuler size={12}/>}>Abmessungen</Badge></td>
+                        <td><Text c={"dimmed"}>
+                            {product.size.height} X {product.size.width} X {product.size.depth} cm
+                        </Text></td>
                     </tr>
 
                     <tr>
-                        <td><Badge leftSection={<FaWeight/>}>Gewicht</Badge></td>
-                        <td><Text c={"dimmed"}>20kg</Text></td>
+                        <td><Badge variant={"outline"} leftSection={<IconWeight size={12}/>}>Gewicht</Badge></td>
+                        <td><Text c={"dimmed"}>{product.weight}kg</Text></td>
                     </tr>
 
                     <tr>
-                        <td><Badge leftSection={<FaBox/>}>Lieferumfang</Badge></td>
+                        <td><Badge variant={"outline"} leftSection={<IconBox size={12}/>}>Lieferumfang</Badge></td>
                         <td>
-                            <List fz={"sm"}>
-                                <List.Item> <Text c={"dimmed"}>Lorem</Text></List.Item>
-                                <List.Item> <Text c={"dimmed"}>ipsum</Text></List.Item>
-                                <List.Item><Text c={"dimmed"}>dolor</Text></List.Item>
+                            <List fz={"sm"} c={"dimmed"}>
+                                {product.included.map((item, index) => (
+                                    <List.Item key={index}>{item}</List.Item>
+                                ))}
                             </List>
                         </td>
                     </tr>
 
                     <tr>
-                        <td><Badge leftSection={<FaShippingFast/>}>Versand</Badge></td>
-                        <td><Text c={"dimmed"}>Versand per DHL oder Selbstabholung</Text></td>
+                        <td><Badge variant={"outline"} leftSection={<IconPackgeExport size={12}/>}>Versand</Badge></td>
+                        <td>
+
+                            <List fz={"sm"} c={"dimmed"}>
+                                {product.shipping &&
+                                    <List.Item>Versand möglich</List.Item>
+                                }
+                                {product.pickup &&
+                                    <List.Item>Selbstabholung möglich</List.Item>
+                                }
+                            </List>
+
+                        </td>
                     </tr>
 
                     </tbody>
@@ -301,14 +304,12 @@ export default function Product() {
             <Title order={2} mb={"sm"}>Ähnliche Produkte</Title>
 
             <SimpleGrid cols={3}>
-                <ProduktPreview/>
-                <ProduktPreview/>
-                <ProduktPreview/>
-                <ProduktPreview/>
-                <ProduktPreview/>
-                <ProduktPreview/>
-                <ProduktPreview/>
-                <ProduktPreview/>
+
+                {data.map((product, index) => (
+                    <ProduktPreview key={index} product={product}/>
+                ))}
+
+
             </SimpleGrid>
 
         </Box>

@@ -1,14 +1,18 @@
-import {BoxProps, Box, Skeleton, Group, Rating, Badge, Stack, Text, Tooltip} from "@mantine/core";
+import {BoxProps, Box, Skeleton, Group, Rating, Badge, Stack, Text, Tooltip, Title} from "@mantine/core";
 import {useRouter} from "next/router";
-import {FaEuroSign} from "react-icons/all";
+import {ProductData} from "../data";
+import Image from "next/image";
 
-export default function ProduktPreview(props: BoxProps) {
+export default function ProduktPreview({product, ...props}: BoxProps & { product: ProductData }) {
 
     const rounter = useRouter()
 
     return (
         <Box
-            onClick={() => rounter.push("/product")}
+            onClick={() => rounter.push({
+                pathname: '/product',
+                query: {productName: product.name}
+            })}
             sx={(theme) => ({
                 borderRadius: theme.radius.md,
                 boxShadow: theme.shadows.md,
@@ -23,82 +27,61 @@ export default function ProduktPreview(props: BoxProps) {
             {...props}
         >
 
-            <Group
+            <Stack
                 sx={(theme) => ({
                     alignItems: "start"
                 })}
             >
 
-                <Box sx={(theme) => ({
-                    transition: "all 0.2s ease",
-                    "&:hover": {
-                        boxShadow: theme.shadows.sm,
-                    }
-                })}>
-                    <Skeleton height={150} width={150}/>
-                </Box>
+                <Group>
 
-                <Stack sx={(theme) => ({
-                    flexGrow: 1,
-                })}>
+                    <Box sx={(theme) => ({})}>
+                        <Image src={`/images/${product.images[0]}`} alt={product.name} width={150} height={150}/>
+                    </Box>
 
-                    <Group position={"apart"}>
-                        <Skeleton
-                            height={30}
-                            width={"20%"}
-                            radius="md"
-                        />
+                    <Stack spacing={"md"} align={"start"}>
+
+                        <Text
+                            size={"lg"}
+                            weight={700}
+                            sx={{
+                                textOverflow: "ellipsis",
+                            }}
+                        >
+                            {product.name}
+                        </Text>
+
+                        <Title
+                            order={5}
+                            // gradient={{from: "cyan", to: "green", deg: 45}}
+                            // color={"blue"}
+                            // size={"lg"}
+                            color={"brand"}
+                        >
+                            {product.price} €
+                        </Title>
 
                         <Tooltip label={"Verkäufer*in Rating"} position={"bottom"} withArrow>
                             <Rating
                                 value={3.5}
                                 fractions={2}
                                 readOnly
-                                color={"blue"}
+                                color={"brand"}
                                 sx={(theme) => ({
                                     alignSelf: "flex-start",
                                 })}
                             />
                         </Tooltip>
-                    </Group>
-
-                    <Box>
-
-                        <Badge
-                            // variant={"gradient"}
-                            // gradient={{from: "cyan", to: "green", deg: 45}}
-                            // color={"blue"}
-                        >
-                            42 €
-                        </Badge>
-
-                    </Box>
-
-                    <Box>
-
-                        <Skeleton
-                            height={8}
-                            radius="xl"
-                            mb={"sm"}
-                        />
-                        <Skeleton
-                            height={8}
-                            radius="xl"
-                            mb={"sm"}
-                        />
-                        <Skeleton
-                            height={8}
-                            radius="xl"
-                            mb={"sm"}
-                            width={"80%"}
-                        />
-
-                    </Box>
+                    </Stack>
+                </Group>
 
 
-                </Stack>
-
-            </Group>
+                <Box>
+                    <Text lineClamp={2} color={"dimmed"}>
+                        {product.description}
+                    </Text>
+                </Box>
+            </Stack>
         </Box>
     )
 }
