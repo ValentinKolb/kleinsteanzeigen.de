@@ -1,4 +1,4 @@
-import {BoxProps, Box, Skeleton, Group, Rating, Badge, Stack, Text, Tooltip, Title} from "@mantine/core";
+import {Box, BoxProps, Flex, Rating, Stack, Text, Title, Tooltip} from "@mantine/core";
 import {useRouter} from "next/router";
 import {ProductData} from "../data";
 import Image from "next/image";
@@ -33,17 +33,23 @@ export default function ProduktPreview({product, ...props}: BoxProps & { product
                 })}
             >
 
-                <Group>
-
-                    <Box sx={(theme) => ({})}>
+                <Flex direction={"row"} gap={"xl"}>
+                    <Box sx={(theme) => ({
+                        borderRadius: theme.radius.lg,
+                    })}>
                         <Image src={`/images/${product.images[0]}`} alt={product.name} width={150} height={150}/>
                     </Box>
 
-                    <Stack spacing={"md"} align={"start"}>
+                    <Stack spacing={"md"}
+                           sx={(theme) => ({
+                               flexGrow: 1,
+                           })}
+                    >
 
                         <Text
                             size={"lg"}
                             weight={700}
+                            color={"blue"}
                             sx={{
                                 textOverflow: "ellipsis",
                             }}
@@ -56,7 +62,7 @@ export default function ProduktPreview({product, ...props}: BoxProps & { product
                             // gradient={{from: "cyan", to: "green", deg: 45}}
                             // color={"blue"}
                             // size={"lg"}
-                            color={"brand"}
+                            color={"green"}
                         >
                             {product.price} €
                         </Title>
@@ -66,14 +72,14 @@ export default function ProduktPreview({product, ...props}: BoxProps & { product
                                 value={3.5}
                                 fractions={2}
                                 readOnly
-                                color={"brand"}
+                                color={"yellow"}
                                 sx={(theme) => ({
                                     alignSelf: "flex-start",
                                 })}
                             />
                         </Tooltip>
                     </Stack>
-                </Group>
+                </Flex>
 
 
                 <Box>

@@ -1,38 +1,18 @@
-import {
-    Box,
-    Group,
-    Badge,
-    Divider,
-    ActionIcon,
-    Text,
-    Container,
-    Button,
-    Modal,
-    TextInput,
-    PasswordInput, Code, Drawer, Textarea, Checkbox, Flex, MediaQuery, Popover, Title
-} from "@mantine/core";
+import {Box, Flex, Group, Image, Loader, Text} from "@mantine/core";
 import Link from "next/link";
-import {useState} from "react";
-import Register from "./Register";
-import {IconCheck, IconLockOpen, IconLogin, IconTag, IconUser} from "@tabler/icons";
+import dynamic from "next/dynamic";
+import {useWindowScroll} from "@mantine/hooks";
+
+const UserNav = dynamic(() => import("./UserNav"), {
+    ssr: false,
+    loading: () => <Loader size={"sm"}/>
+})
 
 export default function NavBar() {
 
-    const [showLogin, setShowLogin] = useState(false)
-    const [showRegister, setShowRegister] = useState(false)
-
-    const countSteps = 3
+    const [scroll] = useWindowScroll()
 
     return <>
-
-        <Modal
-            opened={showRegister}
-            onClose={() => setShowRegister(false)}
-            title="Registrieren"
-        >
-            <Register close={() => setShowRegister(false)}/>
-        </Modal>
-
         <Flex
             justify={"center"}
             sx={(theme) => ({
@@ -41,111 +21,83 @@ export default function NavBar() {
                 zIndex: 100,
                 width: "100%",
                 position: "fixed",
-                boxShadow: theme.shadows.md,
-                // 1320px
+                boxShadow: scroll.y < 15 ? "none" : scroll.y < 25 ? theme.shadows.sm : theme.shadows.md,
+                transition: "all 0.2 ease"
             })}>
 
             <Box
-                mx={"sm"}
                 sx={(theme) => ({
                     width: "960px",
                 })}
-                px={0}
-                p={"sm"}
+                p={"xs"}
             >
-
                 <Group position="apart">
-
-                    <Button
-                        size={"md"}
+                    <Box
                         component={Link}
                         href={"/"}
-                        passHref
-                        variant={"outline"}
-                        //gradient={{from: 'teal', to: 'blue', deg: 45}}
-                        leftIcon={<IconTag/>}
                         sx={(theme) => ({
-                            // fontFamily: 'Aclonica, sans-serif',
-                            boxShadow: theme.shadows.md
+                            display: "flex",
+                            flexDirection: "row",
+                            alignItems: "center",
+                            textDecoration: "none",
+                            color: "inherit",
+                            "&:hover": {
+                                textDecoration: "underline",
+                                textDecorationThickness: 3,
+                                textDecorationColor: theme.colors.yellow[5],
+                            },
+                            borderRadius: theme.radius.md
                         })}
                     >
-                        Kleinsteanzeigen
-                    </Button>
+                        <Image
+                            mr={5}
+                            height={30}
+                            width={30}
+                            alt={"Logo"}
+                            src={"/logo.png"}
+                            fit={"contain"}
+                        />
+                        <Box
+                            sx={(theme) => ({
 
-                    <Group spacing={"sm"}>
+                                display: "flex",
+                                flexDirection: "row"
 
-                        <MediaQuery styles={{display: "none"}} smallerThan={"xs"}>
-                            <Badge
-                                leftSection={<IconCheck/>}
+                            })}
+                        >
+                            <Text
                                 color={"green"}
+                                sx={(theme) => ({
+
+                                    fontSize: theme.headings.sizes.h2.fontSize,
+                                    fontWeight: 700,
+                                    margin: 0,
+                                    padding: 0,
+                                    lineHeight: 1,
+
+                                })}
                             >
-                                Trusted Online Shop
-                            </Badge>
-                        </MediaQuery>
+                                Kleinste
+                            </Text>
+                            <Text
+                                color={"blue"}
+                                sx={(theme) => ({
 
-                        <Popover width={400} trapFocus position="bottom-end" withArrow shadow="md" opened={showLogin}
-                                 onChange={() => setShowLogin(l => !l)}>
+                                    fontSize: theme.headings.sizes.h2.fontSize,
+                                    fontWeight: 700,
+                                    margin: 0,
+                                    padding: 0,
+                                    lineHeight: 1,
 
-                            <Popover.Target>
-
-                                <ActionIcon
-                                    size={"xl"}
-                                    onClick={() => setShowLogin(true)}
-                                    sx={(theme) => ({
-                                        borderRadius: theme.radius.sm,
-                                        boxShadow: theme.shadows.md,
-
-                                    })}
-                                    //variant={"gradient"}
-                                    //gradient={{from: 'cyan', to: 'green', deg: 45}}
-                                    color={"blue"}
-                                >
-                                    <IconLogin/>
-                                </ActionIcon>
-                            </Popover.Target>
-
-                            <Popover.Dropdown>
-
-                                <Title order={3}>Anmelden</Title>
-
-                                <TextInput label="Anmeldename" placeholder="Anmeldename" mb={"sm"}/>
-                                <PasswordInput label="Passwort" placeholder="Passwort" mb={"sm"}/>
-
-                                <Group>
-                                    <Button
-                                        //variant={"gradient"}
-                                        //gradient={{from: 'teal', to: 'blue', deg: 45}}
-                                        leftIcon={<IconLockOpen/>}
-                                        onClick={() => setShowLogin(false)}
-                                    >
-                                        Einloggen
-                                    </Button>
-
-                                    <Text>oder</Text>
-
-                                    <Button
-                                        //variant={"gradient"}
-                                        //gradient={{from: 'blue', to: 'green', deg: 45}}
-                                        leftIcon={<IconUser/>}
-                                        onClick={() => {
-                                            setShowLogin(false)
-                                            setShowRegister(true)
-                                        }}
-                                    >
-                                        Konto erstellen
-                                    </Button>
-                                </Group>
-
-                            </Popover.Dropdown>
-
-                        </Popover>
-
-                    </Group>
-
+                                })}
+                            >
+                                anzeigen
+                            </Text>
+                        </Box>
+                    </Box>
+                    <UserNav/>
                 </Group>
-
             </Box>
-
         </Flex>
     </>
 }
