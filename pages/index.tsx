@@ -9,7 +9,19 @@ import {
     SimpleGrid,
     Group,
     Button,
-    Flex, Badge, ActionIcon, MultiSelect, RangeSlider, BoxProps, Stack, TextInput, Dialog, Modal, Collapse, Anchor
+    Flex,
+    Badge,
+    ActionIcon,
+    MultiSelect,
+    RangeSlider,
+    BoxProps,
+    Stack,
+    TextInput,
+    Dialog,
+    Modal,
+    Collapse,
+    Anchor,
+    Input, Tooltip
 } from "@mantine/core";
 import ProduktPreview from "../components/ProduktPreview";
 import {useState} from "react";
@@ -18,7 +30,9 @@ import InserateProductDialog from "../components/InserateProductDialog";
 import data from "../data";
 import {Carousel} from "@mantine/carousel";
 import {
-    IconFilter,
+    IconChevronDown,
+    IconChevronUp,
+    IconFilter, IconFilterOff,
     IconHeartHandshake,
     IconLink,
     IconMapPin, IconPlus,
@@ -32,40 +46,40 @@ const Badges = () => {
     return <Group mb={"sm"} grow>
 
         <Badge
-            leftSection={<IconMapPin size={12} />}
-            variant={"outline"}
+            leftSection={<IconMapPin size={12}/>}
+            variant={"light"}
             //color={"gray"}
         >
             Lokal
         </Badge>
 
         <Badge
-            leftSection={<IconHeartHandshake size={12} />}
-            variant={"outline"}
+            leftSection={<IconHeartHandshake size={12}/>}
+            variant={"light"}
             //color={"gray"}
         >
             Direkt
         </Badge>
 
         <Badge
-            leftSection={<IconTree size={12} />}
-            variant={"outline"}
+            leftSection={<IconTree size={12}/>}
+            variant={"light"}
             //color={"gray"}
         >
             Nachhaltig
         </Badge>
 
         <Badge
-            leftSection={<IconUsers size={12} />}
-            variant={"outline"}
+            leftSection={<IconUsers size={12}/>}
+            variant={"light"}
             //color={"gray"}
         >
             Persönlich
         </Badge>
 
         <Badge
-            leftSection={<IconLink size={12} />}
-            variant={"outline"}
+            leftSection={<IconLink size={12}/>}
+            variant={"light"}
             //color={"gray"}
         >
             ... mehr
@@ -119,48 +133,49 @@ export default function Home() {
 
                                     }}
                                 >
-
-
                                     <Stack
                                         align={"start"}
                                         sx={(theme) => ({
                                             marginTop: 20,
                                             marginLeft: 20,
                                             width: "30%",
+                                            backgroundColor: "white",
+                                            opacity: 0.95,
+                                            borderRadius: theme.radius.md,
+                                            boxShadow: theme.shadows.xl,
+                                            padding: theme.spacing.md,
+                                            transition: "all 0.2s ease-in-out",
+                                            "&:hover": {
+                                                transform: "scale(1.01)",
+                                            }
                                         })}
                                     >
+                                        <Title size={"xl"}>
+                                            {product.name}
+                                        </Title>
 
-                                        <Stack
-                                            align={"start"}
-                                            sx={(theme) => ({
-                                                borderRadius: theme.radius.md,
-                                                boxShadow: theme.shadows.md,
-                                                backgroundColor: "white",
-                                                padding: theme.spacing.md,
+                                        <Group>
 
-                                            })}
-                                        >
-                                            <Title size={"xl"}>
-                                                {product.name}
-                                            </Title>
 
-                                            <Badge variant={"outline"} >
+                                            <Badge variant={"filled"} color={"green"}>
                                                 {product.price}€
                                             </Badge>
 
-                                            <Text lineClamp={3}>
-                                                {product.description}
-                                            </Text>
+                                            <Badge color={"yellow"} variant={"outline"}>
+                                                Sonderangebot
+                                            </Badge>
+                                        </Group>
 
-                                            <Anchor href={`/product?productName=${encodeURIComponent(product.name)}`}>
-                                                Mehr erfahren
-                                            </Anchor>
 
-                                        </Stack>
+                                        <Text lineClamp={3}>
+                                            {product.description}
+                                        </Text>
 
-                                        <Badge color={"green"}>
-                                            Sonderangebot
-                                        </Badge>
+
+                                        <Anchor color={"blue"}
+                                                href={`/product?productName=${encodeURIComponent(product.name)}`}>
+                                            Mehr erfahren
+                                        </Anchor>
 
                                     </Stack>
                                 </Box>
@@ -170,112 +185,109 @@ export default function Home() {
             </Carousel>
 
             <Box>
-                <Group position="apart" align={"center"}>
-                    <Autocomplete
-                        sx={(theme) => ({
-                            flexGrow: 1,
-                        })}
-                        mb={"sm"}
-                        placeholder={"Suche"}
-                        icon={<IconSearch/>}
-                        data={['iPhone (trending)', 'Sofa', 'Pflanzen']}
-                    />
-                    <ActionIcon onClick={() => setShowSearch(b => !b)}>
-                        <IconFilter/>
-                    </ActionIcon>
-                </Group>
+                <Box mb={"sm"}>
 
-                <Collapse in={showSearch}>
-                    <Box
-                        mb={"sm"}
+                    <Flex
+                        gap={"sm"}
+                        direction={{base: 'column', sm: 'row'}}
+                        sx={(theme) => ({})}
                     >
-                        <Stack
-                            //    justify={"space-between"}
-                            h={"100%"}
-                        >
-                            <Box>
+                        <Autocomplete
+                            sx={(theme) => ({
+                                flexGrow: 1,
+                            })}
+                            placeholder={"Suche"}
+                            data={['iPhone (trending)', 'Sofa', 'Pflanzen']}
+                            rightSection={
+                                <Tooltip label={showSearch ? "Filter verbergen" : "Filter anzeigen"}>
+                                    <ActionIcon size={32} onClick={() => setShowSearch(b => !b)}>
+                                        {showSearch ? <IconFilterOff size={20}/> : <IconFilter size={20}/>}
+                                    </ActionIcon>
+                                </Tooltip>
+                            }
+                        />
+
+                        <Group position="center">
+                            <Button
+                                variant={"outline"}
+                                leftIcon={<IconSearch/>}
+                                color={"green"}
+                            >
+                                Stöbern
+                            </Button>
+
+                            <Text c={"dimmend"}>oder</Text>
+
+                            <Button
+                                variant={"outline"}
+                                color={"yellow"}
+                                leftIcon={<IconPlus/>}
+                                onClick={() => setShowInserateProductDialog(true)}
+                            >
+                                Selbst inserieren
+                            </Button>
+
+                        </Group>
+
+                    </Flex>
+
+                    <Collapse in={showSearch}>
+                        <Box my={"sm"}>
+                            <SimpleGrid breakpoints={[
+                                {minWidth: 'xs', cols: 2, spacing: 'sm'},
+                                {maxWidth: 'xs', cols: 1, spacing: 'sm'},
+                            ]}>
+                                <Stack>
+                                    <MultiSelect
+                                        data={["Schmuck", "Kleidung", "Elektronik", "Möbel", "Pflanzen", "Sonstiges"]}
+                                        label="Kategorien"
+                                        description={"In welchen Kategorien suchst du?"}
+                                        icon={<IconFilter/>}
+                                    />
+                                    <Input.Wrapper
+                                        label={"Preis"}
+                                        description={"In welchem Preisbereich suchst du?"}
+                                    >
+                                        <RangeSlider
+                                            my={"sm"}
+                                            marks={[
+                                                {value: 20, label: '10€'},
+                                                {value: 50, label: '100€'},
+                                                {value: 80, label: '1.000€'},
+                                            ]}
+                                        />
+                                    </Input.Wrapper>
+                                </Stack>
+
+                                <Stack>
+                                    <Autocomplete
+                                        label="Region"
+                                        icon={<IconMapPin/>}
+                                        placeholder="Ulm, Baden-Württemberg, ..."
+                                        description={"Von wo aus suchst du?"}
+                                        data={['Ulm', 'Augsburg']}
+                                    />
+                                    <Input.Wrapper
+                                        label={"Entfernung"}
+                                        description={"Wie weit bist du bereit zu fahren?"}
+                                    >
+                                        <RangeSlider
+                                            my={"sm"}
+                                            marks={[
+                                                {value: 20, label: '10km'},
+                                                {value: 50, label: '50km'},
+                                                {value: 80, label: '100km'},
+                                            ]}
+                                        />
+                                    </Input.Wrapper>
+
+                                </Stack>
+                            </SimpleGrid>
+                        </Box>
+                    </Collapse>
 
 
-                                <Autocomplete
-                                    mb={"sm"}
-                                    label="Region"
-                                    icon={<IconMapPin/>}
-                                    placeholder="Ulm, Baden-Württemberg, ..."
-                                    description={"Von wo aus suchst du?"}
-                                    data={['Ulm', 'Augsburg']}
-                                />
-
-                                <NumberInput
-                                    mb={"sm"}
-                                    label={"Entfernung"}
-                                    description={"Wie weit willst du fahren? (in km)"}
-                                    icon={<IconRuler/>}
-                                />
-
-                                <MultiSelect
-                                    data={["Schmuck", "Kleidung", "Elektronik", "Möbel", "Pflanzen", "Sonstiges"]}
-                                    label="Kategorien"
-                                    description={"In welchen Kategorien suchst du?"}
-                                    icon={<IconFilter/>}
-                                />
-
-                                <RangeSlider
-                                    my={"xl"}
-                                    label={null}
-                                    //color={"gray"}
-                                    marks={[
-                                        {value: 20, label: '10€'},
-                                        {value: 50, label: '100€'},
-                                        {value: 80, label: '1.000€'},
-                                    ]}
-                                />
-
-                            </Box>
-                        </Stack>
-                    </Box>
-                </Collapse>
-
-                <Flex
-                    mb={"sm"}
-                    dir={"row"}
-                    align="center"
-                    gap="md"
-                    py={"sm"}
-                    sx={(theme) => ({
-                        borderRadius: theme.radius.md,
-                        // backgroundImage: `url("/background.svg")`,
-                        backgroundRepeat: "no-repeat",
-                        backgroundSize: "cover",
-                        transition: "all 0.2s ease-in-out",
-                        [`@media (max-width: ${theme.breakpoints.sm}px)`]: {
-                            justifyContent: "center"
-                        }
-                    })}
-                >
-                    <Button
-                        variant={"outline"}
-                        leftIcon={<IconSearch/>}
-                        sx={{boxShadow: "0 0 10px 5px white;",}}
-                    >
-                        Stöbern
-                    </Button>
-
-                    <Text c={"dimmend"} sx={{
-                        // textShadow: "black 0px 0 10px"
-                    }}>oder</Text>
-
-                    <Button
-                        variant={"outline"}
-                        leftIcon={<IconPlus/>}
-                        sx={{boxShadow: "0 0 10px 5px white;",}}
-                        onClick={() => setShowInserateProductDialog(true)}
-                    >
-                        Selbst inserieren
-                    </Button>
-                </Flex>
-
-
-                <Badges/>
+                </Box>
 
                 <SimpleGrid cols={2}>
                     {products.map((product, i) => (<ProduktPreview key={i} product={product}/>))}

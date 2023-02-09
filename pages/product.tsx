@@ -91,8 +91,8 @@ const ProductOverview = ({product, ...props}: BoxProps & { product: ProductData 
                     justifySelf: "flex-start",
                 })}
                 leftIcon={<IconShoppingCart/>}
-                variant="outline"
-                // gradient={{from: 'indigo', to: 'teal', deg: 60}}
+                variant="filled"
+                color={"yellow"}
             >
                 Merken
             </Button>
@@ -102,8 +102,8 @@ const ProductOverview = ({product, ...props}: BoxProps & { product: ProductData 
                     justifySelf: "flex-start",
                 })}
                 leftIcon={<IconHeartHandshake/>}
-                variant="outline"
-                // gradient={{from: 'teal', to: 'blue', deg: 60}}
+                variant="filled"
+                color={"green"}
             >
                 Verhandeln
             </Button>
@@ -143,7 +143,7 @@ const SellerOverview = (props: BoxProps) => {
                 <Avatar/>
             </Flex>
 
-            <Text c={"dimmed"} mb={"md"}>
+            <Text c={"dimmed"}>
                 Ich bin Händler aus Leidenschaft. Ich verkaufe nur die besten Produkte.
             </Text>
 
@@ -151,20 +151,22 @@ const SellerOverview = (props: BoxProps) => {
                 value={3.5}
                 fractions={2}
                 readOnly
-                color={"blue"}
+                color={"green"}
             />
+            <Button
+                color={"yellow"}
+                component={Link}
+                href={"/seller"}
+                sx={(theme) => ({
+                    justifySelf: "flex-start",
+                })}
+                leftIcon={<IconAward/>}
+                variant={"subtle"}
+            >
+                Bewertungen ansehen
+            </Button>
+
         </Stack>
-        <Button
-            component={Link}
-            href={"/seller"}
-            sx={(theme) => ({
-                justifySelf: "flex-start",
-            })}
-            leftIcon={<IconAward/>}
-            variant={"subtle"}
-        >
-            Bewertungen ansehen
-        </Button>
     </Box>
 }
 
@@ -197,10 +199,7 @@ export default function Product() {
 
                 <Breadcrumbs>{items}</Breadcrumbs>
 
-                <Badge
-                    //color={"gray"}
-                    leftSection={<IconShoppingCart/>}
-                >
+                <Badge color={"green"}>
                     Professioneller Reseller
                 </Badge>
 
@@ -246,9 +245,10 @@ export default function Product() {
                     <tbody>
 
                     <tr>
-                        <td><Badge variant={"outline"} leftSection={<IconInfoCircle size={12}/>}>Beschreibung</Badge>
+                        <td valign={"top"}><Badge sx={{border: "none"}} variant={"outline"}
+                                                  leftSection={<IconInfoCircle size={12}/>}>Beschreibung</Badge>
                         </td>
-                        <td><Text c={"dimmed"}>
+                        <td valign={"top"}><Text c={"dimmed"}>
                             {product.description}
                         </Text>
                         </td>
@@ -256,20 +256,23 @@ export default function Product() {
 
 
                     <tr>
-                        <td><Badge variant={"outline"} leftSection={<IconRuler size={12}/>}>Abmessungen</Badge></td>
-                        <td><Text c={"dimmed"}>
+                        <td valign={"top"}><Badge sx={{border: "none"}} variant={"outline"}
+                                                  leftSection={<IconRuler size={12}/>}>Abmessungen</Badge></td>
+                        <td valign={"top"}><Text c={"dimmed"}>
                             {product.size.height} X {product.size.width} X {product.size.depth} cm
                         </Text></td>
                     </tr>
 
                     <tr>
-                        <td><Badge variant={"outline"} leftSection={<IconWeight size={12}/>}>Gewicht</Badge></td>
-                        <td><Text c={"dimmed"}>{product.weight}kg</Text></td>
+                        <td valign={"top"}><Badge sx={{border: "none"}} variant={"outline"}
+                                                  leftSection={<IconWeight size={12}/>}>Gewicht</Badge></td>
+                        <td valign={"top"}><Text c={"dimmed"}>{product.weight}kg</Text></td>
                     </tr>
 
                     <tr>
-                        <td><Badge variant={"outline"} leftSection={<IconBox size={12}/>}>Lieferumfang</Badge></td>
-                        <td>
+                        <td valign={"top"}><Badge sx={{border: "none"}} variant={"outline"}
+                                                  leftSection={<IconBox size={12}/>}>Lieferumfang</Badge></td>
+                        <td valign={"top"}>
                             <List fz={"sm"} c={"dimmed"}>
                                 {product.included.map((item, index) => (
                                     <List.Item key={index}>{item}</List.Item>
@@ -279,7 +282,8 @@ export default function Product() {
                     </tr>
 
                     <tr>
-                        <td><Badge variant={"outline"} leftSection={<IconPackgeExport size={12}/>}>Versand</Badge></td>
+                        <td><Badge sx={{border: "none"}} variant={"outline"}
+                                   leftSection={<IconPackgeExport size={12}/>}>Versand</Badge></td>
                         <td>
 
                             <List fz={"sm"} c={"dimmed"}>

@@ -132,7 +132,7 @@ export default function NavBar() {
                                             setShowRegister(true)
                                         }}
                                     >
-                                        Konto erstellen
+                                        Erstellen
                                     </Button>
                                 </Group>
 
