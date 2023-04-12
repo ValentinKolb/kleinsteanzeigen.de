@@ -2,7 +2,19 @@ import {PocketbaseError, usePB} from "../lib/pocketbase"
 import {useState} from "react";
 import {useForm} from "@mantine/form";
 import {useMutation} from "react-query";
-import {ActionIcon, Button, Group, Menu, Modal, PasswordInput, Popover, Text, TextInput, Title} from "@mantine/core";
+import {
+    ActionIcon,
+    Avatar, Box,
+    Button,
+    Group, Image,
+    Menu,
+    Modal,
+    PasswordInput,
+    Popover,
+    Text,
+    TextInput, ThemeIcon,
+    Title, UnstyledButton
+} from "@mantine/core";
 import Register from "./Register";
 import {
     IconHammer,
@@ -11,12 +23,13 @@ import {
     IconLogin,
     IconLogout,
     IconMessageCircle,
-    IconUser,
+    IconUser, IconUserCircle,
     IconUserCog,
     IconUserPlus
 } from "@tabler/icons-react";
 import {useDisclosure} from "@mantine/hooks";
 import Account from "./Account";
+import Link from "next/link";
 
 const LoginButton = () => {
 
@@ -113,25 +126,53 @@ const LoginButton = () => {
 
 const UserButton = () => {
 
-    const {user, logout} = usePB()
-    const [opened, {open, close}] = useDisclosure(false);
+    const {user, logout, pb} = usePB()
+    const [opened, {open, close}] = useDisclosure(false)
+
+    const avatar = user?.avatar ? pb.getFileUrl(user, user.avatar) : null
 
     return <>
 
-        <Modal size={"lg"} opened={opened} onClose={close} title={`Hallo ${user?.username}`}>
+        <Modal size={"lg"} opened={opened} onClose={close} title={`Account Einstellungen`}>
             <Account/>
         </Modal>
 
-
         <Menu shadow="md" width={200} position={"bottom-end"}>
             <Menu.Target>
-                <ActionIcon
-                    size="lg"
-                    radius="xl"
-                    color={"green"}
-                >
-                    <IconUser/>
-                </ActionIcon>
+                {!avatar ?
+                    <ActionIcon color={"green"} radius={"xl"}>
+                        <IconUserCircle/>
+                    </ActionIcon>
+                    :
+                    <UnstyledButton
+                        sx={(theme) => ({
+                            borderRadius: 100,
+                            overflow: "hidden",
+                            position: "relative",
+                            cursor: "pointer",
+                            boxShadow: theme.shadows.lg,
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                        })}
+                    >
+                        <Image src={avatar} alt={user?.username} height={30} width={30} fit={"cover"}/>
+                        <Box
+                            sx={(theme) => ({
+                                height: "100%",
+                                width: "100%",
+                                borderRadius: 100,
+                                position: "absolute",
+
+                                top: 0,
+                                left: 0,
+
+                                outline: "1px solid rgba(255, 255, 255, 0.5)",
+                                outlineOffset: -1,
+                            })}
+                        />
+                    </UnstyledButton>
+                }
             </Menu.Target>
 
             <Menu.Dropdown>
@@ -144,7 +185,13 @@ const UserButton = () => {
                     Account
                 </Menu.Item>
                 <Menu.Item icon={<IconMessageCircle size={14}/>}>Nachrichten</Menu.Item>
-                <Menu.Item icon={<IconHammer size={14}/>}>Meine Auktionen</Menu.Item>
+                <Menu.Item
+                    component={Link}
+                    href={"/auctions"}
+                    icon={<IconHammer size={14}/>}
+                >
+                    Meine Anzeigen
+                </Menu.Item>
 
                 <Menu.Divider/>
 

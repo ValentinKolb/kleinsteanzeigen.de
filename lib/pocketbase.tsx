@@ -33,10 +33,14 @@ const PocketData = () => {
 
     useEffect(() => {
         return pb.authStore.onChange((token, model) => {
-            setToken(token);
-            setUser(model);
+            setToken(token)
+            setUser(model)
         });
     }, [])
+
+    const refresh = useCallback(async () => {
+        await pb.collection("users").authRefresh()
+    }, [pb])
 
     const register = useCallback(async (data: {}) => {
         return await pb
@@ -65,7 +69,15 @@ const PocketData = () => {
 
     useInterval(refreshSession, token ? twoMinutesInMs : Infinity)
 
-    return {register, login, logout, user: user as UserModel | null, token, pb}
+    return {
+        register,
+        login,
+        logout,
+        user: user as UserModel | null,
+        token,
+        pb,
+        refresh
+    }
 }
 
 export const PocketProvider = ({children}: { children: ReactNode }) => {

@@ -5,7 +5,16 @@ import {usePB} from "../lib/pocketbase";
 import React from "react";
 import {convertLength, convertWeight, extractFromHtmlString} from "../lib/util";
 import ImageLightbox from "./ImageLightbox";
-import {IconBox, IconBoxOff, IconDimensions, IconHome, IconHomeOff, IconWeight} from "@tabler/icons-react";
+import {
+    IconArchive,
+    IconBox,
+    IconBoxOff,
+    IconDimensions,
+    IconHome,
+    IconHomeOff,
+    IconMoneybag,
+    IconWeight
+} from "@tabler/icons-react";
 import Link from "next/link";
 import TextWithIcon from "./TextWithIcon";
 
@@ -168,25 +177,51 @@ const ProductPreview = ({product, mode, loading}: {
                     <Skeleton height={20} width={"30%"} radius={"xl"}/>
                 </Group>
                 :
-                <Group>
-                    {product.expand.categories.map((category: CategoryModel) => (
-                        <Badge
-                            sx={{
-                                cursor: "pointer",
-                                "&:hover": {
-                                    textDecoration: "underline"
-                                }
-                            }}
-                            variant="light"
-                            color="yellow"
-                            key={category.id}
-                            component={Link}
-                            href={"/category/" + category.id}
-                        >
-                            {category.name}
-                        </Badge>
-                    ))}
-                </Group>}
+
+                <>
+                    {(product?.archived || product?.sold) && <>
+                        <Group>
+                            {
+                                product?.sold && <Badge
+                                    variant="light" color="green"
+                                    leftSection={<IconMoneybag size={14} stroke={1}/>}
+                                >
+                                    Verkauft
+                                </Badge>
+                            }
+                            {
+                                product?.archived && <Badge
+                                    variant="light" color="blue"
+                                    leftSection={<IconArchive size={14} stroke={1}/>}
+                                >
+                                    Archiviert
+                                </Badge>
+                            }
+                        </Group>
+                        <Divider my={"sm"}/>
+                    </>}
+
+                    <Group>
+                        {product.expand.categories.map((category: CategoryModel) => (
+                            <Badge
+                                sx={{
+                                    cursor: "pointer",
+                                    "&:hover": {
+                                        textDecoration: "underline"
+                                    }
+                                }}
+                                variant="light"
+                                color="yellow"
+                                key={category.id}
+                                component={Link}
+                                href={"/category/" + category.id}
+                            >
+                                {category.name}
+                            </Badge>
+                        ))}
+                    </Group>
+                </>
+            }
         </Box>
     </Box>
 }

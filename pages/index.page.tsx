@@ -43,6 +43,10 @@ import {CategoryModel, ProductModel} from "../models";
 import {useHover, useInterval, useMediaQuery, useToggle, useWindowScroll} from "@mantine/hooks";
 import Link from "next/link";
 import TextWithIcon from "../components/TextWithIcon";
+import {useForm} from "@mantine/form";
+import {Prism} from "@mantine/prism";
+import CategorySelect from "../components/CategorySelect";
+import LocationInput from "../components/LocationInput";
 
 const tags = [
     "Second Hand",
@@ -237,6 +241,8 @@ const Search = ({
     toggleViewMode: () => void
 }) => {
 
+    const {pb} = usePB()
+
     const [scroll] = useWindowScroll()
 
     const theme = useMantineTheme()
@@ -249,7 +255,35 @@ const Search = ({
 
     const [showInserateProductDialog, setShowInserateProductDialog] = useState(false)
 
+    const formValues = useForm({
+        initialValues: {
+            search: "",
+            categories: [] as string[],
+            price: {
+                from: 0,
+                to: 1000
+            },
+            shipping: false,
+            pickup: false,
+            sold: false,
+        }
+    })
 
+    const categoriesQuery = useQuery(
+        {
+            queryKey: ["categoriesQuery"],
+            queryFn: async () => await pb
+                .collection("categories")
+                .getFullList({sort: "name"})
+                .then(data => data.map(v => ({
+                    name: v.name,
+                    description: v.description,
+                    value: v.id,
+                    label: v.name,
+                    image: pb.getFileUrl(v, v.icon)
+                })))
+        }
+    )
     return <>
 
         <Modal
@@ -261,12 +295,15 @@ const Search = ({
             <InserateProductDialog close={() => setShowInserateProductDialog(false)}/>
         </Modal>
 
+        <Prism language={"json"}>
+            {JSON.stringify(formValues.values, null, 2)}
+        </Prism>
+
         <Box
             sx={(theme) => ({
                 position: "relative",
             })}
         >
-
             <Box
                 sx={(theme) => ({
                     position: "absolute",
@@ -289,7 +326,6 @@ const Search = ({
                         <Box
                             style={styles}
                             sx={(theme) => ({
-
                                 height: "100%",
                                 width: "100%",
                                 display: "flex",
@@ -405,6 +441,7 @@ const Search = ({
                             }
                             placeholder="Nach Produkten suchen ..."
                             rightSectionWidth={84}
+                            {...formValues.getInputProps("search")}
                         />
 
                         <Group position="center">
@@ -425,12 +462,15 @@ const Search = ({
                                 {maxWidth: 'xs', cols: 1, spacing: 'sm'},
                             ]}>
                                 <Stack>
-                                    <MultiSelect
-                                        data={["Schmuck", "Kleidung", "Elektronik", "Möbel", "Pflanzen", "Sonstiges"]}
-                                        label="Kategorien"
-                                        description={"In welchen Kategorien suchst du?"}
-                                        icon={<IconFilter/>}
+
+                                    <CategorySelect
+                                        clearable
+                                        icon={<IconCategory/>}
+                                        label={"Kategorie"}
+                                        description={"In welcher Kategorie suchst du?"}
+                                        {...formValues.getInputProps("categories")}
                                     />
+
                                     <Input.Wrapper
                                         label={"Preis"}
                                         description={"In welchem Preisbereich suchst du?"}
@@ -447,12 +487,10 @@ const Search = ({
                                 </Stack>
 
                                 <Stack>
-                                    <Autocomplete
-                                        label="Region"
-                                        icon={<IconMapPin/>}
-                                        placeholder="Ulm, Baden-Württemberg, ..."
-                                        description={"Von wo aus suchst du?"}
-                                        data={['Ulm', 'Augsburg']}
+                                    <LocationInput
+
+                                        label={"Region"}
+                                        description={"Wo suchst du?"}
                                     />
                                     <Input.Wrapper
                                         label={"Entfernung"}
@@ -492,6 +530,7 @@ export default function Home() {
         queryFn: async () => await pb.collection("products").getList<ProductModel>(activePage, 50, {
             sort: '-created',
             expand: 'categories,seller',
+            filter: `archived=false&&sold=false`
         }),
         onSuccess: (data) => {
             setTotalPages(data.totalPages)

@@ -48,6 +48,7 @@ import HTML from "./HTML";
 import StrengthMeter from "./StrengthMeter";
 import {z} from "zod";
 import Message from "./Message";
+import CategorySelect from "./CategorySelect";
 
 
 const SizeInput = (props: NumberInputProps) => (
@@ -66,24 +67,6 @@ const SizeInput = (props: NumberInputProps) => (
     />
 )
 
-const AutoCompleteItem = forwardRef<HTMLDivElement, CategoryModel>(
-    ({description, value, image, name, ...others}: CategoryModel, ref) => (
-        <div ref={ref} {...others}>
-            <Group noWrap>
-                <Avatar src={image}/>
-                <div>
-                    <Text color={"green"}>{name}</Text>
-                    <Text size="xs" color="dimmed">
-                        {description}
-                    </Text>
-                </div>
-            </Group>
-        </div>
-
-    )
-)
-
-AutoCompleteItem.displayName = "AutoCompleteItem";
 
 function PhotoPreview({file, removeFile, size}: { file: File, removeFile?: () => void, size?: number }) {
     const [preview, setPreview] = useState<string | null>(null);
@@ -191,17 +174,12 @@ export default function InserateProductDialog({close}: { close: () => void }) {
 
     const categoriesQuery = useQuery(
         {
-            queryKey: ["categoriesQuery"],
+            queryKey: ["categories"],
             queryFn: async () => await pb
                 .collection("categories")
-                .getFullList({sort: "name"})
-                .then(data => data.map(v => ({
-                    name: v.name,
-                    description: v.description,
-                    value: v.id,
-                    label: v.name,
-                    image: pb.getFileUrl(v, v.icon)
-                })))
+                .getFullList<CategoryModel>({
+                    sort: "name"
+                })
         }
     )
 
@@ -293,12 +271,7 @@ export default function InserateProductDialog({close}: { close: () => void }) {
 
                 <Title color={"green"} order={4}>Kategorie</Title>
 
-                <MultiSelect
-                    data={categoriesQuery.data ?? []}
-                    placeholder={"Kategorie"}
-                    description={"In welche Kategorien passen zu deinem Produkt?"}
-                    itemComponent={AutoCompleteItem}
-                    searchable
+                <CategorySelect
                     mb={"sm"}
                     {...formValues.getInputProps('categories')}
                 />

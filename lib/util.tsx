@@ -34,3 +34,13 @@ export function convertWeight(kg: number): string {
         return `${tonnes.toFixed(2)}t`;
     }
 }
+
+export function removeEmptyTagsFromHtmlString(html: string): string {
+    const parser = new DOMParser()
+    const doc = parser.parseFromString(html, "text/html")
+
+    const emptyTags = doc.querySelectorAll(":empty")
+    emptyTags.forEach((tag) => tag.parentNode?.removeChild(tag))
+
+    return doc?.body ? doc.body.innerHTML : ""
+}

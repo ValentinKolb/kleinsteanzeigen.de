@@ -44,7 +44,7 @@ export default function CategoryView() {
         queryFn: async () => await pb.collection("products").getList<ProductModel>(1, 50, {
             sort: '-created',
             expand: 'categories,seller',
-            filter: `categories.id?="${id}"`
+            filter: `categories.id?="${id}"&&archived=false&&sold=false`
         }),
         onSuccess: (data) => setTotalPages(data.totalPages),
         enabled: !!id

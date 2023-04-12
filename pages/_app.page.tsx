@@ -58,7 +58,6 @@ const ButtonControls = () => {
         {user &&
             <Tooltip label={"Nachrichten"} color={"green"} position={"left"}>
                 <Box ref={ref}>
-
                     <ActionIcon
                         color={"green"}
                         radius={"xl"}
