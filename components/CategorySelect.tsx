@@ -1,22 +1,32 @@
 import React, {forwardRef} from "react";
 import {CategoryModel} from "../models";
-import {Avatar, Group, MultiSelect, MultiSelectProps, Text} from "@mantine/core";
+import {Avatar, Box, Group, MultiSelect, MultiSelectProps, Text} from "@mantine/core";
 import {useQuery} from "react-query";
 import {usePB} from "../lib/pocketbase";
 
 const AutoCompleteItem = forwardRef<HTMLDivElement, CategoryModel>(
     ({description, value, image, name, ...others}: CategoryModel, ref) => (
-        <div ref={ref} {...others}>
-            <Group noWrap>
-                <Avatar src={image}/>
-                <div>
-                    <Text color={"green"}>{name}</Text>
-                    <Text size="xs" color="dimmed">
-                        {description}
-                    </Text>
-                </div>
-            </Group>
-        </div>
+        <Box ref={ref} {...others}
+
+             sx={(theme) => ({
+                 display: "flex",
+                 alignItems: "center",
+                 justifyContent: "start",
+                 gap: theme.spacing.sm
+             })}
+        >
+            <Avatar
+                src={image}
+                alt={name}
+                size="sm"
+            />
+            <Box>
+                <Text color={"green"}>{name}</Text>
+                <Text size="xs" color="dimmed">
+                    {description}
+                </Text>
+            </Box>
+        </Box>
 
     )
 )

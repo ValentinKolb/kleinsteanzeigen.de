@@ -1,14 +1,13 @@
 import {useRouter} from "next/router";
 import {useQuery} from "react-query";
-import {ProductModel} from "../../models";
-import {usePB} from "../../lib/pocketbase";
-import {Box, Button, Center, Flex, Menu, Modal, Pagination, Text, Title, Tooltip, useMantineTheme} from "@mantine/core";
-import {IconHome, IconLayoutGrid, IconLayoutList, IconPlus, IconSlash, IconSparkles} from "@tabler/icons-react";
-import ProductGrid, {GridViewMode} from "../../components/ProductGrid";
+import {BookmarkModel} from "../../../models";
+import {usePB} from "../../../lib/pocketbase";
+import {Box, Button, Center, Flex, Pagination, Text, Title, Tooltip, useMantineTheme} from "@mantine/core";
+import {IconHome, IconLayoutGrid, IconLayoutList, IconSlash} from "@tabler/icons-react";
+import ProductGrid, {GridViewMode} from "../../../components/ProductGrid";
 import React, {useEffect, useState} from "react";
 import {useToggle} from "@mantine/hooks";
 import Link from "next/link";
-import InserateProductDialog from "../../components/InserateProductDialog";
 
 export default function AuctionsView() {
 
@@ -19,17 +18,19 @@ export default function AuctionsView() {
 
     const [activePage, setPage] = useState(1)
     const [totalPages, setTotalPages] = useState(10)
-    const [showInserateProductDialog, setShowInserateProductDialog] = useState(false)
     const theme = useMantineTheme()
 
     const productQuery = useQuery({
         queryKey: ["productByCategory", user?.id],
-        queryFn: async () => await pb.collection("products").getList<ProductModel>(1, 50, {
-            sort: '-created',
-            expand: 'categories,seller',
-            filter: `seller.id?="${user!.id}"`
-        }),
+        queryFn: async () => {
+            return await pb.collection("bookmarks").getList<BookmarkModel>(1, 50, {
+                sort: '-created',
+                expand: 'product,product.seller,product.categories',
+                filter: `user='${user?.id}'`
+            })
+        },
         onSuccess: (data) => setTotalPages(data.totalPages),
+        enabled: !!user
     })
 
     useEffect(() => {
@@ -41,15 +42,6 @@ export default function AuctionsView() {
     }
 
     return <>
-        <Modal
-            opened={showInserateProductDialog}
-            onClose={() => setShowInserateProductDialog(false)}
-            title={"Neues Produkt inserieren"}
-            size={"xl"}
-        >
-            <InserateProductDialog close={() => setShowInserateProductDialog(false)}/>
-        </Modal>
-
         <Box
             mb={"sm"}
             sx={(theme) => ({
@@ -94,51 +86,33 @@ export default function AuctionsView() {
                     />
 
                     <Title order={1} color={"green"} truncate>
-                        Mein Auktionen
+                        Meine Favoriten
                     </Title>
                 </Flex>
                 <Text color={"dimmed"} sx={{flexShrink: 1}}>
-                    Herzlich Willkommen zu deinen Produkten! Hier findest du eine Übersicht all deiner aktiven und
-                    abgeschlossenen Anzeigen.
-                    Viel Erfolg bei deinen Anzeigen!
+                    Hier kannst du deine Lieblingsprodukte jederzeit einsehen und verwalten,
+                    ohne lange suchen zu müssen.
+                    Deine Favoritenliste macht das Einkaufen noch einfacher und angenehmer.
                 </Text>
             </Box>
 
-            <Menu shadow="md" width={200} position={"bottom-end"}>
-                <Menu.Target>
-                    <Button
-                        compact
-                        color={"gray"}
-                        variant={"light"}
-                        leftIcon={<IconSparkles size={14}/>}
-                    >
-                        Aktionen
-                    </Button>
-                </Menu.Target>
+            <Button
+                compact
+                color={"gray"}
+                variant={"light"}
+                onClick={() => toggleViewMode()}
+                leftIcon={viewMode === "gridView" ?
+                    <IconLayoutList size={14}/> :
+                    <IconLayoutGrid size={14}/>
+                }
+            >
+                {viewMode === "gridView" ? "Spaltenansicht" : "Zeilenansicht"}
+            </Button>
 
-                <Menu.Dropdown>
-                    <Menu.Item
-                        component={"button"}
-                        onClick={() => setShowInserateProductDialog(true)}
-                        icon={<IconPlus size={14}/>}
-                    >
-                        Inserieren
-                    </Menu.Item>
-                    <Menu.Item
-                        component={"button"}
-                        onClick={() => toggleViewMode()}
-                        icon={viewMode === "gridView" ?
-                            <IconLayoutList size={14}/> :
-                            <IconLayoutGrid size={14}/>
-                        }
-                    >
-                        {viewMode === "gridView" ? "Spaltenansicht" : "Zeilenansicht"}
-                    </Menu.Item>
-                </Menu.Dropdown>
-            </Menu>
         </Box>
         <Box mb={"sm"}>
-            <ProductGrid products={productQuery.data?.items ?? []} mode={viewMode} loading={!user || productQuery.isLoading}/>
+            <ProductGrid products={productQuery.data?.items.map(b => b.expand.product) ?? []} mode={viewMode}
+                         loading={!user || productQuery.isLoading}/>
         </Box>
         <Center>
             <Pagination

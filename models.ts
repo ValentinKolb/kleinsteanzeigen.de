@@ -6,7 +6,6 @@ export type BaseModel = {
     collectionName: string;
     created: string;
     updated: string;
-    expand: any;
 } & Record
 
 export type UserModel = {
@@ -31,10 +30,9 @@ export type CategoryModel = {
 export type ProductModel = {
     name: string;
 
-    height: number;
-    width: number;
-    depth: number;
-    weight: number;
+    location_name: string;
+    location_lat: number;
+    location_lon: number;
 
     shipping: boolean
     pickup: boolean;
@@ -55,5 +53,14 @@ export type ProductModel = {
     expand: {
         seller: SellerView
         categories: CategoryModel[]
+    }
+} & BaseModel
+
+export type BookmarkModel = {
+    product: string;
+    user: string;
+    expand: {
+        product: ProductModel
+        user: UserModel
     }
 } & BaseModel

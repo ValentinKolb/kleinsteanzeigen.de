@@ -14,12 +14,13 @@ import {
     Tooltip,
     useMantineTheme
 } from "@mantine/core";
-import {IconCategory, IconLayoutGrid, IconLayoutList, IconSlash} from "@tabler/icons-react";
+import {IconCategory, IconChevronRight, IconHome, IconLayoutGrid, IconLayoutList, IconSlash} from "@tabler/icons-react";
 import NotFound from "../../components/ErrorMessage";
 import ProductGrid, {GridViewMode} from "../../components/ProductGrid";
 import React, {useEffect, useState} from "react";
 import {useToggle} from "@mantine/hooks";
 import Link from "next/link";
+import Home from "../index.page";
 
 export default function CategoryView() {
 
@@ -59,11 +60,7 @@ export default function CategoryView() {
     }
 
     if (categoryQuery.isError) {
-        return <>
-            <NotFound label={"Kategorie nicht gefunden"} description={
-                "Leider konnten wir die Kategorie nicht finden."
-            }/>
-        </>
+        return router.push("/404")
     }
 
     return <>
@@ -82,7 +79,7 @@ export default function CategoryView() {
                 sx={(theme) => ({
                     display: "flex",
                     flexDirection: "column",
-                    gap: theme.spacing.xs
+                    gap: theme.spacing.xs,
                 })}
             >
                 <Flex gap={"xs"} align={"center"}>
@@ -99,18 +96,20 @@ export default function CategoryView() {
                     >
                         <Tooltip label={"Alle Kategorien"}>
                             <IconCategory
-                                size={32}
+                                size={25}
                                 color={theme.colors.green[5]}
                             />
                         </Tooltip>
                     </Box>
 
-                    <IconSlash
+                    <IconChevronRight
                         size={20}
                         color={theme.colors.gray[5]}
                     />
 
-                    <Title order={1} color={"green"} truncate>
+                    <Title order={2} color={"green"} truncate
+                           sx={{lineHeight: 1.1}}
+                    >
                         {categoryQuery.data!.name}
                     </Title>
                 </Flex>

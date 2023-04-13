@@ -100,7 +100,7 @@ export default function MyApp({Component, pageProps}: AppProps) {
                         theme={{
                             colors: {
                                 "green": ['#bad689', '#acce71', '#9ec659', '#90be42', '#82b62a', '#75ae13', '#699c11', '#5d8b0f', '#51790d'],
-                                "red": ['#ed8c95', '#ea757f', '#e65e6a', '#e34655', '#df2f40', '#DC192B', '#c61626', '#b01422', '#9a111e'],
+                                "red": ['#ed8c95', '#ed8c95', '#ed8c95', '#ed8c95', '#ea757f', '#e65e6a', '#e34655', '#DC192B', '#c61626', '#b01422'],
                                 "blue": ['#8cace5', '#759ce0', '#5e8bdb', '#477ad6', '#306ad1', '#1a5acc', '#1751b7', '#1448a3', '#123e8e'],
                                 "yellow": ['#f7cf85', '#f6c66d', '#f4bc54', '#f3b33c', '#f1a924', '#f0a00c', '#d8900a', '#c08009', '#a87008'],
                             },
@@ -137,7 +137,7 @@ export default function MyApp({Component, pageProps}: AppProps) {
                             <NavBar/>
                             <Container
                                 sx={(theme) => ({
-                                    marginTop: "54px",
+                                    marginTop: "60px",
                                     height: "100%"
                                 })}
                             >

@@ -20,6 +20,7 @@ export default function NavBar() {
                 backgroundColor: "white",
                 zIndex: 100,
                 width: "100%",
+                height: "60px",
                 position: "fixed",
                 boxShadow: scroll.y < 15 ? "none" : scroll.y < 25 ? theme.shadows.sm : theme.shadows.md,
                 transition: "all 0.2 ease"
@@ -28,10 +29,13 @@ export default function NavBar() {
             <Box
                 sx={(theme) => ({
                     width: "960px",
+                    display: "flex",
+                    flexDirection: "row",
+                    alignItems: "center",
+                    justifyContent: "space-between",
                 })}
-                p={"xs"}
+                p={"md"}
             >
-                <Group position="apart">
                     <Box
                         component={Link}
                         href={"/"}
@@ -59,17 +63,15 @@ export default function NavBar() {
                         />
                         <Box
                             sx={(theme) => ({
-
                                 display: "flex",
                                 flexDirection: "row"
-
                             })}
                         >
                             <Text
                                 color={"green"}
                                 sx={(theme) => ({
 
-                                    fontSize: theme.headings.sizes.h2.fontSize,
+                                    fontSize: theme.headings.sizes.h1.fontSize,
                                     fontWeight: 700,
                                     margin: 0,
                                     padding: 0,
@@ -83,7 +85,7 @@ export default function NavBar() {
                                 color={"blue"}
                                 sx={(theme) => ({
 
-                                    fontSize: theme.headings.sizes.h2.fontSize,
+                                    fontSize: theme.headings.sizes.h1.fontSize,
                                     fontWeight: 700,
                                     margin: 0,
                                     padding: 0,
@@ -96,7 +98,6 @@ export default function NavBar() {
                         </Box>
                     </Box>
                     <UserNav/>
-                </Group>
             </Box>
         </Flex>
     </>

@@ -1,4 +1,4 @@
-import {Stack, Text, Title, useMantineTheme} from "@mantine/core";
+import {Image, Stack, Text, Title, useMantineTheme} from "@mantine/core";
 import {TablerIconsProps} from "@tabler/icons-react";
 import {FC} from "react";
 
@@ -19,25 +19,18 @@ export default function Message(
             spacing={"lg"}
             align={"center"}
         >
-            <Title order={1} mb={"sm"}
-                   variant={"gradient"}
-                   gradient={{
-                       from: "green",
-                       to: "yellow",
-                   }}
-            >
+            <Title order={1} mb={"sm"} color={"green"}>
                 {label}
             </Title>
 
-            <Icon stroke={1} size={200} color={theme.colors.green[5]}/>
+            <Image
+                height={100}
+                fit={"contain"}
+                src={"/teddy_wave.png"}
+                alt={"Teddy"}
+                />
 
-            <Text size={"lg"}
-                  variant={"gradient"}
-                  gradient={{
-                      from: "green",
-                      to: "yellow",
-                  }}
-            >
+            <Text size={"lg"} color={"dimmed"}>
                 {description}
             </Text>
 

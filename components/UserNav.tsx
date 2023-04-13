@@ -18,7 +18,7 @@ import {
 import Register from "./Register";
 import {
     IconHammer,
-    IconHandRock,
+    IconHandRock, IconHeart,
     IconLockOpen,
     IconLogin,
     IconLogout,
@@ -140,8 +140,8 @@ const UserButton = () => {
         <Menu shadow="md" width={200} position={"bottom-end"}>
             <Menu.Target>
                 {!avatar ?
-                    <ActionIcon color={"green"} radius={"xl"}>
-                        <IconUserCircle/>
+                    <ActionIcon color={"green"} radius={"xl"} size={"lg"}>
+                        <IconUserCircle size="2.125rem"/>
                     </ActionIcon>
                     :
                     <UnstyledButton
@@ -154,9 +154,14 @@ const UserButton = () => {
                             display: "flex",
                             alignItems: "center",
                             justifyContent: "center",
+                            transition: "all 0.2s ease-in-out",
+                            "&:hover": {
+                                boxShadow: theme.shadows.xl,
+                                transform: "scale(1.05)",
+                            }
                         })}
                     >
-                        <Image src={avatar} alt={user?.username} height={30} width={30} fit={"cover"}/>
+                        <Image src={avatar} alt={user?.username} height={35} width={35} fit={"cover"}/>
                         <Box
                             sx={(theme) => ({
                                 height: "100%",
@@ -185,12 +190,23 @@ const UserButton = () => {
                     Account
                 </Menu.Item>
                 <Menu.Item icon={<IconMessageCircle size={14}/>}>Nachrichten</Menu.Item>
+
+                <Menu.Divider/>
+
                 <Menu.Item
                     component={Link}
                     href={"/auctions"}
                     icon={<IconHammer size={14}/>}
                 >
-                    Meine Anzeigen
+                    Meine Inserate
+                </Menu.Item>
+
+                <Menu.Item
+                    component={Link}
+                    href={"/product/my"}
+                    icon={<IconHeart size={14}/>}
+                >
+                    Favoriten
                 </Menu.Item>
 
                 <Menu.Divider/>

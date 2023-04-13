@@ -5,13 +5,13 @@ import {
     Badge,
     Box,
     Button,
-    Checkbox,
+    Checkbox, Divider,
     Group,
     Image,
     Input,
     MultiSelect,
     NumberInput,
-    NumberInputProps,
+    NumberInputProps, SimpleGrid,
     Spoiler,
     Stack,
     Stepper,
@@ -28,12 +28,12 @@ import {
     IconGavel,
     IconHome,
     IconHomeOff,
-    IconLink,
+    IconLink, IconLocation, IconMap,
     IconMoodSad,
     IconPackage,
     IconPackageOff,
     IconPencil,
-    IconPhoto,
+    IconPhoto, IconPin,
     IconRuler,
     IconX
 } from "@tabler/icons-react"
@@ -49,6 +49,10 @@ import StrengthMeter from "./StrengthMeter";
 import {z} from "zod";
 import Message from "./Message";
 import CategorySelect from "./CategorySelect";
+import LocationInput, {GeoLocation} from "./LocationInput";
+import TextWithIcon from "./TextWithIcon";
+import {removeEmptyTagsFromHtmlString} from "../lib/util";
+import Link from "next/link";
 
 
 const SizeInput = (props: NumberInputProps) => (
@@ -118,17 +122,18 @@ export default function InserateProductDialog({close}: { close: () => void }) {
         initialValues: {
             seller: user?.id,
             name: '',
-            height: undefined as number | undefined,
-            width: undefined as number | undefined,
-            depth: undefined as number | undefined,
-            weight: 0,
+            height: null as number | null,
+            width: null as number | null,
+            depth: null as number | null,
+            weight: null as number | null,
             shipping: false,
             pickup: false,
             categories: [] as string [],
             description: '',
             included: '',
             files: [] as File[],
-            price: 0
+            price: 0,
+            location: null as GeoLocation | null,
         },
         validate: (values) => {
             switch (active) {
@@ -136,13 +141,10 @@ export default function InserateProductDialog({close}: { close: () => void }) {
                     return {
                         seller: values.seller === undefined ? "Bitte melde dich an" : null,
                         name: z.string().min(3).max(80).safeParse(values.name).success ? null : "Der Name muss zwischen 3 und 80 Zeichen lang sein",
-                        height: z.number().min(0).safeParse(values.height).success ? null : "Die Höhe muss mindestens 0 cm sein",
-                        width: z.number().min(0).safeParse(values.width).success ? null : "Die Breite muss mindestens 0 cm sein",
-                        depth: z.number().min(0).safeParse(values.depth).success ? null : "Die Tiefe muss mindestens 0 cm sein",
-                        weight: z.number().min(0).safeParse(values.weight).success ? null : "Das Gewicht muss mindestens 0 kg sein",
                         shipping: values.pickup === false && values.shipping === false ? "Wähle mindestens eine Versandart aus" : null,
                         pickup: values.shipping === false && values.pickup === false ? "Wähle wähle mindestens eine Versandart aus" : null,
                         categories: 1 <= values.categories.length && values.categories.length <= 3 ? null : "Wähle zwischen 1 und 3 Kategorien aus.",
+                        location: location !== null ? null : "Wähle einen Standort aus"
                     }
 
                 case 1:
@@ -199,17 +201,17 @@ export default function InserateProductDialog({close}: { close: () => void }) {
             const data = new FormData()
             data.append("seller", values.seller!.toString())
             data.append("name", values.name)
-            data.append("height", values.height!.toString())
-            data.append("width", values.width!.toString())
-            data.append("depth", values.depth!.toString())
-            data.append("weight", values.weight.toString())
             data.append("shipping", values.shipping.toString())
             data.append("pickup", values.pickup.toString())
             values.categories.forEach((cat) => data.append("categories", cat))
-            data.append("description", values.description)
-            data.append("included", values.included)
+            data.append("description", removeEmptyTagsFromHtmlString(values.description))
+            data.append("included", removeEmptyTagsFromHtmlString(values.included))
             values.files.forEach((file) => data.append("images", file))
             data.append("price", values.price.toString())
+
+            data.append("location_name", values.location!.name)
+            data.append("location_lat", values.location!.lat.toString())
+            data.append("location_lon", values.location!.lon.toString())
 
             return await pb.collection("products").create(data)
         }
@@ -256,8 +258,8 @@ export default function InserateProductDialog({close}: { close: () => void }) {
     }
 
     return <>
-        <Stepper active={active} onStepClick={setActive} breakpoint={"sm"} color={"green"}>
-            <Stepper.Step description="Start" allowStepClick={false} allowStepSelect={false} icon={<IconRuler/>}>
+        <Stepper active={active} onStepClick={setActive} color={"green"}>
+            <Stepper.Step allowStepClick={false} allowStepSelect={false} icon={<IconRuler/>}>
 
                 <Title color={"green"} order={3}>Produktname</Title>
 
@@ -269,48 +271,51 @@ export default function InserateProductDialog({close}: { close: () => void }) {
                     {...formValues.getInputProps('name')}
                 />
 
-                <Title color={"green"} order={4}>Kategorie</Title>
+                <SimpleGrid breakpoints={[
+                    {minWidth: 'xs', cols: 1},
+                    {minWidth: 'sm', cols: 2},
+                ]} spacing={"md"}>
+                    <Box>
+                        <Title color={"green"} order={4}>Preis</Title>
 
+                        <NumberInput
+                            description={"Steigere das Kaufinteresse durch eine Angabe"}
+                            data-autofocus
+                            placeholder={"Lasse es frei über VB"}
+                            min={0}
+                            step={5}
+                            mb={"sm"}
+                            parser={(value) => value!.replace(/(VB)|(\s?€)|(,*)/g, '')}
+                            formatter={(value) =>
+                                !Number.isNaN(parseFloat(value!))
+                                    ? value === "0" ? "VB" : `${value} €`
+                                    : 'VB'
+                            }
+                            {...formValues.getInputProps('price')}
+                        />
+                    </Box>
+
+                    <Box>
+                        <Title color={"green"} order={4}>Standort</Title>
+                        <LocationInput
+                            description={"Wo befindet sich das Produkt?"} mb={"sm"}
+                            onChange={(value) => formValues.setFieldValue("location", value)}
+                        />
+                    </Box>
+
+                </SimpleGrid>
+
+                <Title color={"green"} order={4}>Kategorie</Title>
                 <CategorySelect
                     mb={"sm"}
                     {...formValues.getInputProps('categories')}
-                />
-
-                <Title color={"green"} order={4}>Abmessung</Title>
-
-                <Input.Wrapper description="Wie groß ist das Produkt (in cm)?" mb={"sm"}>
-                    <Group mt={5} position={"apart"} align={"center"}>
-                        <SizeInput placeholder={"Höhe"} {...formValues.getInputProps("height")} />
-                        <IconX/>
-                        <SizeInput placeholder={"Breite"} {...formValues.getInputProps("width")} />
-                        <IconX/>
-                        <SizeInput placeholder={"Tiefe"} {...formValues.getInputProps("depth")} />
-                    </Group>
-                </Input.Wrapper>
-
-                <Title color={"green"} order={4}>Gewicht</Title>
-
-                <NumberInput
-                    description={"Wie schwer ist das Produkt?"}
-                    placeholder={"12 kg"}
-                    min={0}
-                    step={0.5}
-                    precision={2}
-                    mb={"sm"}
-                    parser={(value) => value!.replace(/(\s?kg)|(,*)/g, '')}
-                    formatter={(value) =>
-                        !Number.isNaN(parseFloat(value!))
-                            ? `${value} kg`
-                            : ''
-                    }
-                    {...formValues.getInputProps('weight')}
                 />
 
                 <Title color={"green"} order={4} mb={"sm"}>Versandoptionen</Title>
 
                 <Checkbox
                     label={"Versand"}
-                    description={"Ich kann das auf Wunsch das Produkt versenden"}
+                    description={"Ich kann das Produkt auf Wunsch versenden"}
                     mb={"sm"}
                     {...formValues.getInputProps('shipping', {type: "checkbox"})}
                 />
@@ -321,7 +326,7 @@ export default function InserateProductDialog({close}: { close: () => void }) {
                 />
             </Stepper.Step>
 
-            <Stepper.Step description="Beschreibung" allowStepClick={false} allowStepSelect={false}
+            <Stepper.Step allowStepClick={false} allowStepSelect={false}
                           icon={<IconPencil/>}>
 
                 <Title color={"green"} order={3}>Beschreibung</Title>
@@ -357,7 +362,7 @@ export default function InserateProductDialog({close}: { close: () => void }) {
                 />
             </Stepper.Step>
 
-            <Stepper.Step description="Bilder" allowStepClick={false} allowStepSelect={false} icon={<IconPhoto/>}>
+            <Stepper.Step allowStepClick={false} allowStepSelect={false} icon={<IconPhoto/>}>
                 <ImageSelect
                     fileCount={formValues.values.files.length}
                     maxFileCount={8}
@@ -385,126 +390,80 @@ export default function InserateProductDialog({close}: { close: () => void }) {
                 }
             </Stepper.Step>
 
-            <Stepper.Step description={"Inserieren"} allowStepClick={false} allowStepSelect={false}
-                          icon={<IconCurrencyEuro/>}>
+            <Stepper.Step allowStepClick={false} allowStepSelect={false}
+                          icon={<IconGavel/>}>
 
-                <Title color={"green"} order={3}>Preis</Title>
 
-                <Text color={"dimmed"} mb={"xs"} size={"sm"}>
-                    Wenn du einen Preis angibst, erleichterst du Interessierten die Entscheidung und schaffst
-                    Klarheit. Ohne Preisangabe kann das Kaufinteresse schnell nachlassen.
-                </Text>
+                <Title color={"green"} order={3} mb={"sm"}>Übersicht für {formValues.values.name}</Title>
 
-                <NumberInput
-                    data-autofocus
-                    placeholder={"Lasse es frei über VB"}
-                    min={0}
-                    step={5}
-                    mb={"sm"}
-                    parser={(value) => value!.replace(/(VB)|(\s?€)|(,*)/g, '')}
-                    formatter={(value) =>
-                        !Number.isNaN(parseFloat(value!))
-                            ? value === "0" ? "VB" : `${value} €`
-                            : 'VB'
-                    }
-                    {...formValues.getInputProps('price')}
-                />
+                <Stack>
 
-                <Title color={"green"} order={4}>Übersicht</Title>
 
-                <Table>
-                    <tbody>
-                    <tr>
-                        <td>Produktname</td>
-                        <td>{formValues.values.name}</td>
-                    </tr>
-                    <tr>
-                        <td>Kategorie</td>
-                        <td>
-                            <Group>
-                                {
-                                    formValues.values.categories.map((id) => {
-                                        const categories = categoriesQuery.data?.find(v => v.value === id)
-                                        return <Badge key={id} color={"green"}>{categories?.name}</Badge>
-                                    })
-                                }
-                            </Group>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>Abmessung</td>
-                        <td>
-                            <Group>
-                                <Badge color={"green"}>{formValues.values.height} cm</Badge>
-                                <IconX size={20}/>
-                                <Badge color={"green"}>{formValues.values.width} cm</Badge>
-                                <IconX size={20}/>
-                                <Badge color={"green"}>{formValues.values.depth} cm</Badge>
-                            </Group>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>Gewicht</td>
-                        <td><Badge color={"green"}>{formValues.values.weight} kg</Badge></td>
-                    </tr>
-                    <tr>
-                        <td>Versand</td>
-                        <td>
-                            <Group>
-                                <Badge
-                                    color={formValues.values.shipping ? "green" : "yellow"}
-                                    leftSection={formValues.values.shipping ? <IconPackage size={15}/> :
-                                        <IconPackageOff size={15}/>}
-                                >
-                                    {formValues.values.shipping ? "Versand möglich" : "Kein Versand"}
-                                </Badge>
-                                <Badge
-                                    color={formValues.values.pickup ? "green" : "yellow"}
-                                    leftSection={formValues.values.pickup ? <IconHome size={15}/> :
-                                        <IconHomeOff size={15}/>}
-                                >
-                                    {formValues.values.pickup ? "Abholung möglich" : "Keine Abholung"}
-                                </Badge>
-                            </Group>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>Beschreibung</td>
-                        <td>
-                            <Spoiler maxHeight={40} showLabel="Alles anzeigen" hideLabel="Ausblenden">
-                                <HTML sx={(theme) => ({
-                                    fontSize: theme.fontSizes.sm,
-                                })} html={formValues.values.description}/>
-                            </Spoiler>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>Lieferumfang</td>
-                        <td>
-                            <Spoiler maxHeight={40} showLabel="Alles anzeigen" hideLabel="Ausblenden">
-                                <HTML sx={(theme) => ({
-                                    fontSize: theme.fontSizes.sm,
-                                })} html={formValues.values.included}/>
-                            </Spoiler>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>Bilder</td>
-                        <td>
+                    <TextWithIcon Icon={IconMap} truncate color={"dimmed"}>
+                        {formValues.values.location?.name}
+                    </TextWithIcon>
 
-                            <Group>
-                                {formValues.values.files.map((file, index) => (
-                                    <PhotoPreview
-                                        size={50}
-                                        key={file.name + file.webkitRelativePath} file={file}
-                                    />
-                                ))}
-                            </Group>
+                    <Group>
+                        {formValues.values.files.map((file, index) => (
+                            <PhotoPreview
+                                size={50}
+                                key={file.name + file.webkitRelativePath} file={file}
+                            />
+                        ))}
+                    </Group>
 
-                        </td>
-                    </tr>
-                    </tbody>
-                </Table>
+                    <Divider/>
+
+                    <Title color={"gray"} order={5}>Versand</Title>
+
+                    <Group>
+                        <Badge
+                            color={formValues.values.shipping ? "green" : "yellow"}
+                            leftSection={formValues.values.shipping ? <IconPackage size={14}/> :
+                                <IconPackageOff size={14}/>}
+                        >
+                            {formValues.values.shipping ? "Versand möglich" : "Kein Versand"}
+                        </Badge>
+                        <Badge
+                            color={formValues.values.pickup ? "green" : "yellow"}
+                            leftSection={formValues.values.pickup ? <IconHome size={14}/> :
+                                <IconHomeOff size={14}/>}
+                        >
+                            {formValues.values.pickup ? "Abholung möglich" : "Keine Abholung"}
+                        </Badge>
+                    </Group>
+
+                    {removeEmptyTagsFromHtmlString(formValues.values.included) &&
+
+                        <Spoiler maxHeight={40} showLabel="Alles anzeigen" hideLabel="Ausblenden">
+                            <HTML sx={(theme) => ({
+                                fontSize: theme.fontSizes.sm,
+                            })} html={formValues.values.included}/>
+                        </Spoiler>}
+                    <Divider/>
+
+                    <Title color={"gray"} order={5}>Kategorien</Title>
+
+                    <Group>
+                        {
+                            formValues.values.categories.map((id) => {
+                                const category = categoriesQuery.data?.find(v => v.id === id)
+                                return <Badge key={id} color={"gray"}>{category?.name}</Badge>
+                            })
+                        }
+                    </Group>
+
+                    <Divider/>
+
+                    <Title color={"gray"} order={5}>Beschreibung</Title>
+
+                    <Spoiler maxHeight={40} showLabel="Alles anzeigen" hideLabel="Ausblenden">
+                        <HTML sx={(theme) => ({
+                            fontSize: theme.fontSizes.sm,
+                        })} html={formValues.values.description}/>
+                    </Spoiler>
+
+                </Stack>
 
                 {createProductMutation.isError && <PocketbaseError error={createProductMutation.error}/>}
 
@@ -513,12 +472,13 @@ export default function InserateProductDialog({close}: { close: () => void }) {
             <Stepper.Completed>
                 <Message
                     label={"Produkt inseriert"}
-                    description={"Die Anzeige für das Produkt wurde erfolgreich erstellt."}
+                    description={"Anzeige ist raus"}
                     Icon={IconGavel}
                     Action={() => <Button
+                        component={Link}
                         leftIcon={<IconLink/>}
                         color={"green"}
-                        onClick={() => close()}
+                        href={`/product/${createProductMutation.data?.id}`}
                     >
                         Zum Produkt
                     </Button>}

@@ -3,18 +3,9 @@ import {useAutoAnimate} from "@formkit/auto-animate/react";
 import {Badge, Box, createStyles, Divider, Group, rem, SimpleGrid, Skeleton, Stack, Text, Title} from "@mantine/core";
 import {usePB} from "../lib/pocketbase";
 import React from "react";
-import {convertLength, convertWeight, extractFromHtmlString} from "../lib/util";
+import {extractFromHtmlString} from "../lib/util";
 import ImageLightbox from "./ImageLightbox";
-import {
-    IconArchive,
-    IconBox,
-    IconBoxOff,
-    IconDimensions,
-    IconHome,
-    IconHomeOff,
-    IconMoneybag,
-    IconWeight
-} from "@tabler/icons-react";
+import {IconArchive, IconBox, IconBoxOff, IconHome, IconHomeOff, IconMap, IconMoneybag} from "@tabler/icons-react";
 import Link from "next/link";
 import TextWithIcon from "./TextWithIcon";
 
@@ -39,7 +30,6 @@ const ProductPreview = ({product, mode, loading}: {
 }) => {
 
     const {pb} = usePB()
-    const {classes} = useStyles()
 
     return <Box
         sx={(theme) => ({
@@ -125,7 +115,62 @@ const ProductPreview = ({product, mode, loading}: {
                         </Text>
                     }
                 </Stack>
+
                 <Divider my={"sm"}/>
+
+                <Box
+                    sx={(theme) => ({
+
+                        display: "flex",
+                        alignItems: "start",
+                        flexDirection: mode === "gridView" ? "column" : "row",
+                        justifyContent: mode === "gridView" ? "space-between" : "flex-start",
+                        flexWrap: "wrap",
+                        gap: theme.spacing.md
+
+                    })}
+                >
+                    {loading ?
+                        <Skeleton height={10}/>
+                        :
+                        <Box sx={(thema) => ({
+                            width:  mode === "gridView" ?  "100%" : "auto",
+                        })}
+                        >
+                            <TextWithIcon Icon={product.shipping ? IconBox : IconBoxOff} truncate>
+                                {product.shipping ? "Versand" : "Kein Versand"}
+                            </TextWithIcon>
+                        </Box>
+                    }
+                    {loading ?
+                        <Skeleton height={10}/>
+                        :
+                        <Box sx={(thema) => ({
+                            width: mode === "gridView" ?  "100%" : "auto",
+                        })}
+                        >
+                            <TextWithIcon Icon={product.pickup ? IconHome : IconHomeOff} truncate>
+                                {product.pickup ? "Abholung" : "Keine Abholung"}
+                            </TextWithIcon>
+                        </Box>
+                    }
+                    {loading ?
+                        <Skeleton height={10}/>
+                        :
+                        <Box sx={(thema) => ({
+                            width: mode === "gridView" ?  "100%" : "auto",
+                        })}
+                        >
+                            <TextWithIcon
+                                Icon={IconMap}
+                                truncate
+                            >
+                                {product.location_name}
+                            </TextWithIcon>
+                        </Box>
+                    }
+                </Box>
+
                 <SimpleGrid
                     breakpoints={mode === "gridView" ? [
                         {minWidth: 'xs', cols: 1},
@@ -138,35 +183,10 @@ const ProductPreview = ({product, mode, loading}: {
                     ]}
                     sx={{width: "100%"}}
                 >
-                    {loading ?
-                        <Skeleton height={10}/>
-                        :
-                        <TextWithIcon Icon={IconDimensions} truncate>
-                            {convertLength(product.height)} x {convertLength(product.width)} x {convertLength(product.depth)}
-                        </TextWithIcon>
-                    }
-                    {loading ?
-                        <Skeleton height={10}/>
-                        :
-                        <TextWithIcon Icon={IconWeight} truncate>
-                            {convertWeight(product.weight)}
-                        </TextWithIcon>
-                    }
-                    {loading ?
-                        <Skeleton height={10}/>
-                        :
-                        <TextWithIcon Icon={product.shipping ? IconBox : IconBoxOff} truncate>
-                            {product.shipping ? "Versand" : "Kein Versand"}
-                        </TextWithIcon>
-                    }
-                    {loading ?
-                        <Skeleton height={10}/>
-                        :
-                        <TextWithIcon Icon={product.pickup ? IconHome : IconHomeOff} truncate>
-                            {product.pickup ? "Abholung" : "Keine Abholung"}
-                        </TextWithIcon>
-                    }
+
+
                 </SimpleGrid>
+
 
                 <Divider my={"sm"}/>
             </Box>
@@ -211,7 +231,7 @@ const ProductPreview = ({product, mode, loading}: {
                                     }
                                 }}
                                 variant="light"
-                                color="yellow"
+                                color="gray"
                                 key={category.id}
                                 component={Link}
                                 href={"/category/" + category.id}

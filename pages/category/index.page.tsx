@@ -1,16 +1,27 @@
 import {usePB} from "../../lib/pocketbase";
 import {useQuery} from "react-query";
 import {CategoryModel} from "../../models";
-import {Box, Divider, Image, LoadingOverlay, SimpleGrid, Text, Title} from "@mantine/core";
+import {
+    Box,
+    Divider,
+    Flex,
+    Image,
+    LoadingOverlay,
+    SimpleGrid,
+    Text,
+    Title,
+    Tooltip,
+    useMantineTheme
+} from "@mantine/core";
 import React from "react";
 import Link from "next/link";
+import {IconCategory, IconChevronRight, IconHome} from "@tabler/icons-react";
 
 const CategoryCard = ({category}: { category: CategoryModel }) => {
 
     const {pb} = usePB()
 
     return <>
-
         <Box
             component={Link}
             href={`/category/${category.id}`}
@@ -87,7 +98,7 @@ const CategoryCard = ({category}: { category: CategoryModel }) => {
 export default function Categories() {
 
     const {pb} = usePB()
-
+    const theme = useMantineTheme();
     const categoriesQuery = useQuery(
         {
             queryKey: ["categories"],
@@ -103,13 +114,37 @@ export default function Categories() {
 
         <LoadingOverlay visible={categoriesQuery.isLoading}/>
 
-        <Title
-            order={1}
-            mb={"md"}
-            color={"green"}
-        >
-            Kategorien
-        </Title>
+        <Flex gap={"xs"} align={"center"} mb={"sm"} >
+            <Box
+                component={Link}
+                href={"/"}
+                sx={(theme) => ({
+                    cursor: "pointer",
+                    textDecoration: "none",
+                    color: "inherit",
+                    display: "flex",
+                    alignItems: "center",
+                })}
+            >
+                <Tooltip label={"Zu Home"}>
+                    <IconHome
+                        size={25}
+                        color={theme.colors.green[5]}
+                    />
+                </Tooltip>
+            </Box>
+
+            <IconChevronRight
+                size={20}
+                color={theme.colors.gray[5]}
+            />
+
+            <Title order={2} color={"green"} truncate
+                   sx={{lineHeight: 1.1}}
+            >
+                Kategorien
+            </Title>
+        </Flex>
 
         <SimpleGrid breakpoints={[
             {minWidth: "xs", cols: 1},
