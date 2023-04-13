@@ -472,7 +472,8 @@ export default function ProductView() {
     }
 
     if (productQuery.isError) {
-        return router.push("/404")
+        router.push("/404")
+        return <></>
     }
 
     const product = productQuery.data!

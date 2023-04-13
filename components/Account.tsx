@@ -339,7 +339,8 @@ export default function Account() {
     })
 
     if (!user) {
-        return router.push("/404")
+        router.push("/404")
+        return <></>
     }
 
     return <>

@@ -58,7 +58,8 @@ export default function CategoryView() {
     }
 
     if (categoryQuery.isError) {
-        return router.push("/404")
+        router.push("/404")
+        return <></>
     }
 
     return <>
