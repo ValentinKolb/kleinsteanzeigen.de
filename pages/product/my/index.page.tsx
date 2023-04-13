@@ -21,7 +21,7 @@ export default function AuctionsView() {
     const theme = useMantineTheme()
 
     const productQuery = useQuery({
-        queryKey: ["productByCategory", user?.id],
+        queryKey: ["productByUser", user?.id],
         queryFn: async () => {
             return await pb.collection("bookmarks").getList<BookmarkModel>(1, 50, {
                 sort: '-created',
@@ -48,6 +48,7 @@ export default function AuctionsView() {
                 display: "flex",
                 flexDirection: "row",
                 gap: theme.spacing.xs,
+                justifyContent: "space-between",
                 [theme.fn.smallerThan("xs")]: {
                     flexDirection: "column",
                 }

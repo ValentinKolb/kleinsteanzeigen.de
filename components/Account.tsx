@@ -7,22 +7,15 @@ import {
     Group,
     Input,
     Text,
-    TextInput, ThemeIcon,
+    TextInput,
+    ThemeIcon,
     Title,
     Tooltip,
-    UnstyledButton, UnstyledButtonProps
+    UnstyledButton
 } from "@mantine/core";
-import ErrorMessage from "./ErrorMessage";
 import {UserModel} from "../models";
 import {useState} from "react";
-import {
-    IconCertificate,
-    IconCertificateOff,
-    IconCheck,
-    IconPencil,
-    IconPencilPlus,
-    IconX
-} from "@tabler/icons-react";
+import {IconCertificate, IconCertificateOff, IconCheck, IconPencil, IconPencilPlus, IconX} from "@tabler/icons-react";
 import ImageSelect from "./ImageSelect";
 import {useForm} from "@mantine/form";
 import {useMutation} from "react-query";
@@ -30,6 +23,7 @@ import TextWithIcon from "./TextWithIcon";
 import TextEditor from "./TextEditor";
 import HTML from "./HTML";
 import {removeEmptyTagsFromHtmlString} from "../lib/util";
+import {useRouter} from "next/router";
 
 const ProfileAvatar = ({user, refresh}: { user: UserModel, refresh: () => Promise<any> }) => {
 
@@ -330,6 +324,7 @@ const ProfileAboutMe = ({user, refresh}: { user: UserModel, refresh: () => Promi
 export default function Account() {
 
     const {user, refresh} = usePB()
+    const router = useRouter()
 
     const formValues = useForm({
         initialValues: {
@@ -344,7 +339,7 @@ export default function Account() {
     })
 
     if (!user) {
-        return <ErrorMessage label={"Account nicht gefunden"} description={"Bitte melde dich erneut an."}/>
+        return router.push("/404")
     }
 
     return <>

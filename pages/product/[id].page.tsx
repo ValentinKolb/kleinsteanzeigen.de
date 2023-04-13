@@ -1,15 +1,15 @@
 import {useRouter} from "next/router";
 import {useMutation, useQuery} from "react-query";
-import {BookmarkModel, ProductModel, UserModel} from "../../models";
+import {BookmarkModel, ProductModel, SellerView} from "../../models";
 import {usePB} from "../../lib/pocketbase";
 import {
     ActionIcon,
-    Alert,
+    Alert, Avatar,
     Badge,
     Box,
-    Button,
+    Button, Center,
     Divider,
-    Group,
+    Group, Image,
     Loader,
     LoadingOverlay,
     Modal,
@@ -23,9 +23,9 @@ import {
 } from "@mantine/core";
 import {
     IconAlertCircle,
-    IconBookmark,
-    IconBookmarkOff,
-    IconCheck, IconHeart, IconHeartFilled,
+    IconCheck,
+    IconHeart,
+    IconHeartFilled,
     IconHome,
     IconHomeOff,
     IconMap,
@@ -36,12 +36,13 @@ import {
     IconTrash,
     IconX
 } from "@tabler/icons-react";
-import NotFound from "../../components/ErrorMessage";
 import HTML from "../../components/HTML";
 import ImageLightbox from "../../components/ImageLightbox";
 import TextWithIcon from "../../components/TextWithIcon";
 import React from "react";
 import {useDisclosure} from "@mantine/hooks";
+import Link from "next/link";
+import {extractFromHtmlString} from "../../lib/util";
 
 const CustomSwitch = ({loading, ...props}: {
     loading: boolean
@@ -226,6 +227,13 @@ const ProductActions = ({product, refresh}: { product: ProductModel, refresh: ()
 const ProductHeader = ({product}: { product: ProductModel }) => {
     const {user, pb} = usePB()
 
+    const bookmarkCountQuery = useQuery({
+        queryFn: async () => (await pb.collection("bookmarks").getFullList<BookmarkModel>({
+            filter: `product='${product.id}'`
+        })).length,
+        queryKey: ["bookmarkCount", product.id],
+    })
+
     const bookmarkQuery = useQuery({
         queryFn: async () => await pb.collection("bookmarks").getFullList<BookmarkModel>({
             filter: `user='${user?.id}'&&product='${product.id}'`
@@ -250,7 +258,10 @@ const ProductHeader = ({product}: { product: ProductModel }) => {
                 })
             }
         },
-        onSuccess: () => bookmarkQuery.refetch()
+        onSuccess: async () => {
+            await bookmarkQuery.refetch()
+            await bookmarkCountQuery.refetch()
+        }
     })
 
     const userIsSeller = user?.id === product.expand.seller.id
@@ -299,6 +310,15 @@ const ProductHeader = ({product}: { product: ProductModel }) => {
                     </Badge>
                 </Group>
 
+                <Divider/>
+                <TextWithIcon Icon={IconHeart} color={"dimmed"}>
+                    {
+                        bookmarkCountQuery?.data === undefined || bookmarkCountQuery.isLoading ? <>Lade ...</> :
+                            <>
+                                {bookmarkCountQuery?.data >= 200 ? "200+" : bookmarkCountQuery.data ?? 0} interessierte {bookmarkCountQuery?.data === 1 ? "Person" : "Personen"}
+                            </>
+                    }
+                </TextWithIcon>
             </Box>
 
             <Box
@@ -337,6 +357,99 @@ const ProductHeader = ({product}: { product: ProductModel }) => {
             </Box>
         </Box>
     </>
+}
+
+const SellerPreview = ({seller}: { seller: SellerView }) => {
+
+    const {pb} = usePB()
+    const profilePic = pb.getFileUrl(seller, seller.avatar)
+
+    return <Box
+        sx={(theme) => ({
+            height: "100%",
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "space-between",
+            alignItems: "start",
+            gap: theme.spacing.xs,
+        })}
+    >
+
+        <Box
+            sx={(theme) => ({
+                width: "100%",
+                display: "flex",
+                justifyContent: "center",
+            })}
+        >
+            <Avatar
+                alt={"Profilbild von " + seller.username}
+                src={profilePic}
+                sx={(theme) => ({
+                    objectFit: "contain",
+                    borderRadius: "50%",
+                    overflow: "hidden",
+                    height: 100,
+                    width: 100,
+                })}
+            />
+        </Box>
+
+        <Box
+            sx={(theme) => ({
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "start",
+                maxWidth: "100%",
+                overflow: "hidden",
+                textOverflow: "ellipsis",
+            })}
+        >
+            <Text color={"dimmed"} size={"xs"}>
+                Inseriert von
+            </Text>
+            <Title order={3} color={"blue"} truncate
+                   sx={(theme) => ({
+                       maxWidth: "100%",
+                   })}
+            >
+                {seller.username}
+            </Title>
+        </Box>
+
+        {seller.aboutMe &&
+            <Box
+                sx={(theme) => ({
+
+                    maxHeight: 11.625 * 5,
+                    overflow: "hidden",
+                    textOverflow: "ellipsis",
+
+                })}
+            >
+                <Text fz="xs" c="dimmed">
+                    {extractFromHtmlString(seller.aboutMe)}
+                </Text>
+            </Box>
+        }
+
+
+        <Box
+            sx={(theme) => ({
+                display: "flex",
+                justifyContent: "center",
+                width: "100%",
+            })}
+        >
+            <Button
+
+                component={Link}
+                href={"/product/by/" + seller.id}
+            >
+                Profil ansehen
+            </Button>
+        </Box>
+    </Box>
 }
 
 export default function ProductView() {
@@ -428,13 +541,12 @@ export default function ProductView() {
                         borderRadius: theme.radius.md,
                         boxShadow: theme.shadows.sm,
                         flexShrink: 1,
-
                     })}
                 >
                     {userIsSeller ? <>
                         <ProductActions product={product} refresh={productQuery.refetch}/>
                     </> : <>
-                        Käuferansicht
+                        <SellerPreview seller={product.expand.seller}/>
                     </>}
                 </Box>
             </SimpleGrid>

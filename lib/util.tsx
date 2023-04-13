@@ -86,7 +86,6 @@ function throttle<T extends (...args: any[]) => any>(func: T, limit: number): T 
     }) as T;
 }
 
-
 /**
  * Calculates the bounding box for a given center point and distance
  * @param {number} latitude The latitude of the center point

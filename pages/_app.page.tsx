@@ -1,4 +1,3 @@
-import '../styles/globals.css'
 import type {AppProps} from 'next/app'
 import Head from "next/head"
 import {
@@ -20,6 +19,7 @@ import {QueryClient, QueryClientProvider} from "react-query";
 import {useHover, useWindowScroll} from "@mantine/hooks";
 import {IconArrowUp} from "@tabler/icons-react";
 import React from "react";
+import {Footer} from "../components/Footer";
 
 const queryClient = new QueryClient()
 
@@ -133,18 +133,41 @@ export default function MyApp({Component, pageProps}: AppProps) {
                             }
                         }}
                     >
-                        <main>
-                            <NavBar/>
-                            <Container
-                                sx={(theme) => ({
-                                    marginTop: "60px",
-                                    height: "100%"
-                                })}
-                            >
-                                <Component {...pageProps} />
-                            </Container>
-                            <ButtonControls/>
-                        </main>
+                        <Box
+                            sx={(theme) => ({
+                                display: "flex",
+                                flexDirection: "column",
+                                minHeight: "100vh",
+                                justifyContent: "space-between",
+                            })}
+                        >
+                            <main>
+                                <NavBar/>
+                                <Container
+                                    sx={(theme) => ({
+                                        marginTop: "60px",
+                                        height: "100%"
+                                    })}
+                                >
+                                    <Component {...pageProps} />
+                                </Container>
+                                <ButtonControls/>
+                            </main>
+                            <Footer links={[
+                                {
+                                    label: "Kleinsteanzeigen.de",
+                                    link: "/"
+                                },
+                                {
+                                    label: "Alle Kategorien",
+                                    link: "/category"
+                                },
+                                {
+                                    label: "ABG",
+                                    link: "/abg"
+                                }
+                            ]}/>
+                        </Box>
                     </MantineProvider>
                 </PocketProvider>
             </QueryClientProvider>

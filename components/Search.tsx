@@ -321,13 +321,9 @@ const SloganWithTransition = ({height, show}: {
 }
 
 const Search = ({
-                    viewMode,
-                    toggleViewMode,
                     setFilter,
                     search
                 }: {
-    viewMode: GridViewMode
-    toggleViewMode: () => void,
     setFilter: (filter: string | null) => void,
     search: () => void
 }) => {
@@ -363,8 +359,7 @@ const Search = ({
     useEffect(() => {
         const locationFilter = () => {
             if (formValues.values.location && formValues.values.maxRange !== 0) {
-                const box = calculateBoundingBox(formValues.values.location.lat, formValues.values.location.lon, formValues.values.maxRange)
-                console.table(box)
+                const box = calculateBoundingBox(formValues.values.location.lat, formValues.values.location.lon, formValues.values.maxRange * 5)
                 return `location_lat<='${box.maxLatitude}'&&location_lat>='${box.minLatitude}'&&location_lon<='${box.maxLongitude}'&&location_lon>='${box.minLongitude}'`
             }
             return null
@@ -372,7 +367,7 @@ const Search = ({
 
         const priceFilter = () => {
             if (formValues.values.maxPrice !== 0) {
-                return `price<='${formValues.values.maxPrice}'`
+                return `price<='${formValues.values.maxPrice * 10}'`
             }
             return null
         }
@@ -401,20 +396,13 @@ const Search = ({
             <InserateProductDialog close={() => setShowInserateProductDialog(false)}/>
         </Modal>
 
-        <Prism language={"json"}>
-            {JSON.stringify(formValues.values, null, 2)}
-        </Prism>
-
         <Box
             sx={(theme) => ({
                 position: "relative",
             })}
         >
-
             <SloganWithTransition show={!showFilters} height={height}/>
-
             <RandomCategoriesWithTransition height={height} show={!showFilters}/>
-
             <Box
                 sx={(theme) => ({
                     display: "flex",
@@ -455,21 +443,11 @@ const Search = ({
                             radius="xl"
                             size="md"
                             rightSection={
-                                <>
-                                    <Tooltip
-                                        label={viewMode === "gridView" ? "Produkte als Zeilen anzeigen" : "Produkte als Raster anzeigen"}>
-                                        <ActionIcon size={32} radius="xl" onClick={() => toggleViewMode()}>
-                                            {viewMode === "gridView" ? <IconLayoutList size={20}/> :
-                                                <IconLayoutGrid size={20}/>}
-                                        </ActionIcon>
-                                    </Tooltip>
-
-                                    <Tooltip label={showFilters ? "Filter verbergen" : "Filter anzeigen"}>
-                                        <ActionIcon size={32} radius="xl" onClick={() => setShowFilters(b => !b)}>
-                                            {showFilters ? <IconFilterOff size={20}/> : <IconFilter size={20}/>}
-                                        </ActionIcon>
-                                    </Tooltip>
-                                </>
+                                <Tooltip label={showFilters ? "Filter verbergen" : "Filter anzeigen"}>
+                                    <ActionIcon size={32} radius="xl" onClick={() => setShowFilters(b => !b)}>
+                                        {showFilters ? <IconFilterOff size={20}/> : <IconFilter size={20}/>}
+                                    </ActionIcon>
+                                </Tooltip>
                             }
                             placeholder="Nach Produkten suchen ..."
                             rightSectionWidth={84}

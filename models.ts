@@ -19,7 +19,7 @@ export type UserModel = {
     verified: boolean;
 } & BaseModel
 
-export type SellerView = Pick<UserModel, "id" | "username" | "aboutMe" | "avatar">
+export type SellerView = Pick<UserModel, "id" | "username" | "aboutMe" | "avatar"> & BaseModel
 
 export type CategoryModel = {
     name: string;

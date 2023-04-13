@@ -2,6 +2,9 @@ import {Box, Flex, Group, Image, Loader, Text} from "@mantine/core";
 import Link from "next/link";
 import dynamic from "next/dynamic";
 import {useWindowScroll} from "@mantine/hooks";
+import TextWithIcon from "./TextWithIcon";
+import {IconCategory} from "@tabler/icons-react";
+import React from "react";
 
 const UserNav = dynamic(() => import("./UserNav"), {
     ssr: false,
@@ -36,68 +39,69 @@ export default function NavBar() {
                 })}
                 p={"md"}
             >
+                <Box
+                    component={Link}
+                    href={"/"}
+                    sx={(theme) => ({
+                        display: "flex",
+                        flexDirection: "row",
+                        alignItems: "center",
+                        textDecoration: "none",
+                        color: "inherit",
+                        "&:hover": {
+                            textDecoration: "underline",
+                            textDecorationThickness: 3,
+                            textDecorationColor: theme.colors.yellow[5],
+                        },
+                        borderRadius: theme.radius.md
+                    })}
+                >
+                    <Image
+                        mr={5}
+                        height={30}
+                        width={30}
+                        alt={"Logo"}
+                        src={"/logo.png"}
+                        fit={"contain"}
+                    />
                     <Box
-                        component={Link}
-                        href={"/"}
                         sx={(theme) => ({
                             display: "flex",
-                            flexDirection: "row",
-                            alignItems: "center",
-                            textDecoration: "none",
-                            color: "inherit",
-                            "&:hover": {
-                                textDecoration: "underline",
-                                textDecorationThickness: 3,
-                                textDecorationColor: theme.colors.yellow[5],
-                            },
-                            borderRadius: theme.radius.md
+                            flexDirection: "row"
                         })}
                     >
-                        <Image
-                            mr={5}
-                            height={30}
-                            width={30}
-                            alt={"Logo"}
-                            src={"/logo.png"}
-                            fit={"contain"}
-                        />
-                        <Box
+                        <Text
+                            color={"green"}
                             sx={(theme) => ({
-                                display: "flex",
-                                flexDirection: "row"
+
+                                fontSize: theme.headings.sizes.h1.fontSize,
+                                fontWeight: 700,
+                                margin: 0,
+                                padding: 0,
+                                lineHeight: 1,
+
                             })}
                         >
-                            <Text
-                                color={"green"}
-                                sx={(theme) => ({
+                            Kleinste
+                        </Text>
+                        <Text
+                            color={"blue"}
+                            sx={(theme) => ({
 
-                                    fontSize: theme.headings.sizes.h1.fontSize,
-                                    fontWeight: 700,
-                                    margin: 0,
-                                    padding: 0,
-                                    lineHeight: 1,
+                                fontSize: theme.headings.sizes.h1.fontSize,
+                                fontWeight: 700,
+                                margin: 0,
+                                padding: 0,
+                                lineHeight: 1,
 
-                                })}
-                            >
-                                Kleinste
-                            </Text>
-                            <Text
-                                color={"blue"}
-                                sx={(theme) => ({
-
-                                    fontSize: theme.headings.sizes.h1.fontSize,
-                                    fontWeight: 700,
-                                    margin: 0,
-                                    padding: 0,
-                                    lineHeight: 1,
-
-                                })}
-                            >
-                                anzeigen
-                            </Text>
-                        </Box>
+                            })}
+                        >
+                            anzeigen
+                        </Text>
                     </Box>
-                    <UserNav/>
+                </Box>
+
+                <UserNav/>
             </Box>
         </Flex>
     </>

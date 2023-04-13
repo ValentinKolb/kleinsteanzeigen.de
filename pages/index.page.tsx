@@ -1,6 +1,6 @@
-import {Center, Group, Pagination, Stack, Title} from "@mantine/core";
+import {ActionIcon, Center, Group, Pagination, Stack, Title, Tooltip, UnstyledButton} from "@mantine/core";
 import React, {useEffect, useState} from "react";
-import {IconCategory} from "@tabler/icons-react";
+import {IconCategory, IconGridPattern, IconLayoutGrid, IconLayoutList} from "@tabler/icons-react";
 import {usePB} from "../lib/pocketbase";
 import {useQuery} from "react-query";
 import ProductGrid, {GridViewMode} from "../components/ProductGrid";
@@ -20,14 +20,14 @@ export default function Home() {
     const [activePage, setPage] = useState(1)
     const [totalPages, setTotalPages] = useState(10)
 
-    const [filter, setFilter] = useState<string | null>(null)
+    const [productFilter, setProductFilter] = useState<string | null>(null)
 
     const productQuery = useQuery({
         queryKey: ["allProducts"],
         queryFn: async () => await pb.collection("products").getList<ProductModel>(activePage, 50, {
             sort: '-created',
             expand: 'categories,seller',
-            filter: `archived=false&&sold=false${filter ? '&&' + filter : ''}`
+            filter: `archived=false&&sold=false${productFilter ? '&&' + productFilter : ''}`
         }),
         onSuccess: (data) => {
             setTotalPages(data.totalPages)
@@ -40,28 +40,28 @@ export default function Home() {
 
     return (
         <>
-
-            {JSON.stringify(filter)}
-
             <Stack mt={"sm"}>
 
-                <Search viewMode={viewMode} toggleViewMode={toggleViewMode} setFilter={setFilter} search={productQuery.refetch}/>
+                <Search setFilter={setProductFilter} search={productQuery.refetch}/>
 
-                <Group position="apart"
-                >
+                <Group position="apart">
                     <Title order={2} color={"green"}>
-                        Neue Anzeigen
+                        Alle Produkte
                     </Title>
 
-                    <TextWithIcon
-                        Icon={IconCategory}
-                        color={"dimmed"}
-                        component={Link}
-                        href={"/category"}
-                        underline
-                    >
-                        Kategorien
-                    </TextWithIcon>
+                    <Tooltip
+                        label={viewMode === "gridView" ? "Produkte als Zeilen anzeigen" : "Produkte als Raster anzeigen"}>
+
+                        <UnstyledButton onClick={() => toggleViewMode()}>
+                            <TextWithIcon
+                                Icon={viewMode === "gridView" ? IconLayoutList : IconLayoutGrid}
+                                color={"dimmed"}
+                                underline
+                            >
+                                {viewMode === "gridView" ? "Listenansicht" : "Spaltenansicht"}
+                            </TextWithIcon>
+                        </UnstyledButton>
+                    </Tooltip>
                 </Group>
 
                 <ProductGrid

@@ -14,13 +14,11 @@ import {
     Tooltip,
     useMantineTheme
 } from "@mantine/core";
-import {IconCategory, IconChevronRight, IconHome, IconLayoutGrid, IconLayoutList, IconSlash} from "@tabler/icons-react";
-import NotFound from "../../components/ErrorMessage";
+import {IconCategory, IconChevronRight, IconLayoutGrid, IconLayoutList} from "@tabler/icons-react";
 import ProductGrid, {GridViewMode} from "../../components/ProductGrid";
 import React, {useEffect, useState} from "react";
 import {useToggle} from "@mantine/hooks";
 import Link from "next/link";
-import Home from "../index.page";
 
 export default function CategoryView() {
 
@@ -70,6 +68,7 @@ export default function CategoryView() {
                 display: "flex",
                 flexDirection: "row",
                 gap: theme.spacing.xs,
+                justifyContent: "space-between",
                 [theme.fn.smallerThan("xs")]: {
                     flexDirection: "column",
                 }
