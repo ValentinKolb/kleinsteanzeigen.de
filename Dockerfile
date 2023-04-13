@@ -31,7 +31,7 @@ RUN yarn build
 FROM node:16-alpine AS runner
 WORKDIR /app
 
-LABEL maintainer="stuve.computer@uni-ulm.de"
+LABEL maintainer="valentin.kolb@uni-ulm.de"
 
 ENV NODE_ENV production
 ENV NEXT_TELEMETRY_DISABLED 1
@@ -45,7 +45,6 @@ COPY --from=builder                       /app/public                      ./pub
 COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone            ./
 COPY --from=builder --chown=nextjs:nodejs /app/.next/static                ./.next/static
 COPY --from=builder --chown=nextjs:nodejs /app/node_modules/               ./node_modules/
-COPY --from=builder --chown=nextjs:nodejs /app/prisma                      ./prisma
 
 USER nextjs
 
