@@ -7,7 +7,7 @@ import {useInterval} from "@mantine/hooks";
 import jwtDecode from "jwt-decode";
 import {UserModel} from "../models";
 
-const BASE_URL = process.env.NEXT_PUBLIC_BACKEND_URL
+const BASE_URL = "https://backend.kleinsteanzeigen.de"
 const fiveMinutesInMs = ms("5 minutes");
 const twoMinutesInMs = ms("2 minutes");
 

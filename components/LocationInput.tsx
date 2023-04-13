@@ -33,7 +33,7 @@ export default function LocationInput({onChange, ...props}: {
 
     const query = useQuery({
         queryKey: ['location', autoCompleteValue],
-        queryFn: async () => await ofetch<NominatimResponse[]>(`${process.env.NEXT_PUBLIC_GEO_API}/search`, {
+        queryFn: async () => await ofetch<NominatimResponse[]>(`https://geo.kleinsteanzeigen.de/search`, {
                 query: {
                     q: autoCompleteValue,
                     format: "json"
