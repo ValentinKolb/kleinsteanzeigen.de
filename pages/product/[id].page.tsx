@@ -420,7 +420,7 @@ const SellerPreview = ({seller}: { seller: SellerView }) => {
         {seller.aboutMe &&
             <Box
                 sx={(theme) => ({
-
+                    width: "100%",
                     maxHeight: 11.625 * 5,
                     overflow: "hidden",
                     textOverflow: "ellipsis",
