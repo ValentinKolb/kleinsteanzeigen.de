@@ -35,8 +35,5 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
-# yarn
-yarn.lock
-
 # webstorm
 .idea
