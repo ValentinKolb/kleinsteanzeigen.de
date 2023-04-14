@@ -1,20 +1,8 @@
 import {useRouter} from "next/router";
 import {useQuery} from "react-query";
-import {BookmarkModel, ProductModel, SellerView} from "../../../models";
+import {ProductModel, SellerView} from "../../../models";
 import {usePB} from "../../../lib/pocketbase";
-import {
-    Box,
-    Button,
-    Center,
-    Collapse,
-    Flex,
-    Pagination,
-    Spoiler,
-    Text,
-    Title,
-    Tooltip,
-    useMantineTheme
-} from "@mantine/core";
+import {Box, Button, Center, Flex, Pagination, Spoiler, Text, Title, Tooltip, useMantineTheme} from "@mantine/core";
 import {IconHome, IconLayoutGrid, IconLayoutList, IconSlash} from "@tabler/icons-react";
 import ProductGrid, {GridViewMode} from "../../../components/ProductGrid";
 import React, {useEffect, useState} from "react";
@@ -24,7 +12,7 @@ import HTML from "../../../components/HTML";
 
 export default function AuctionsView() {
 
-    const {pb, user} = usePB()
+    const {pb} = usePB()
     const router = useRouter()
     const {id} = router.query as { id: string }
 
@@ -142,7 +130,7 @@ export default function AuctionsView() {
         </Spoiler>
         <Box mb={"sm"}>
             <ProductGrid products={productQuery.data?.items ?? []} mode={viewMode}
-                         loading={!user || productQuery.isLoading}/>
+                         loading={productQuery.isLoading}/>
         </Box>
         <Center>
             <Pagination
